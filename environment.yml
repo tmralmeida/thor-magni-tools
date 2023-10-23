@@ -1,0 +1,12 @@
+name: thor-magni-tools
+channels:
+  - conda-forge
+dependencies:
+  - pip=22.3.1=pyhd8ed1ab_0
+  - python=3.10.8=h4a9ceb5_0_cpython
+  - pip:
+    - altair==4.2.0
+    - numpy==1.24.1
+    - pandas==1.5.3
+    - streamlit==1.18.1
+    - plotly==5.12.0
