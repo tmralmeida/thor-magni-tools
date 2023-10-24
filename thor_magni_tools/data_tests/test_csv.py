@@ -53,7 +53,7 @@ def validate_header(file_name: str, header_dict: dict) -> None:
     if header_nmarkers != sum(header_desc_markers):
         validated = False
         LOGGER.error(
-            "[HEADER FAIL] N_MAKERS=%d but got description for \
+            "[HEADER FAIL] N_MARKERS=%d but got description for \
             %d :( \n Verbose: %s",
             header_nmarkers,
             sum(header_desc_markers),

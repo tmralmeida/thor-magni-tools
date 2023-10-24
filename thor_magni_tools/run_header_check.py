@@ -37,7 +37,7 @@ files_list = os.listdir(root_path)
 
 
 for _fn in files_list:
-    LOGGER.warning("Running file: %s", _fn)
+    LOGGER.debug("Running file: %s", _fn)
     raw_df, header_dict = load_csv_metadata(os.path.join(root_path, _fn))
     new_header_dict = preprocessing_header(header_dict)
     validate_header(_fn, new_header_dict)
