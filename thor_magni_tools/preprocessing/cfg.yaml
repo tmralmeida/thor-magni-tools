@@ -1,0 +1,11 @@
+in_path: ../datasets/thor_magni_zenodo/Scenario_1/THOR-Magni_120522_SC1B_R1.csv
+out_path: outputs/
+preprocessing_type: 6D # options: 3D/6D
+
+options: 
+  max_nans_interpolate: 100 # number of nans to interpolate
+
+
+
+
+
