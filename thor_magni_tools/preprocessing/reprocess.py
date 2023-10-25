@@ -5,6 +5,7 @@ import pandas as pd
 from .filtering import Filterer3DOF, Filterer6DOF
 from ..data_tests.logger import CustomFormatter
 from ..utils.load import load_csv_metadata, preprocessing_header
+from ..io import create_dir
 
 
 LOGGER = logging.getLogger(__name__)
@@ -79,7 +80,8 @@ class TrajectoriesReprocessor:
         )
 
     def run(self):
-        file_name = self.csv_path.split("/")[-1]
+        split_path = self.csv_path.split("/")
+        scenario_id, file_name = split_path[-2], split_path[-1]
         raw_df, header_dict = load_csv_metadata(self.csv_path)
         pp_header_dict = preprocessing_header(header_dict)
         traj_metadata = pp_header_dict["SENSOR_DATA"]["TRAJECTORIES"]["METADATA"]
@@ -122,6 +124,6 @@ class TrajectoriesReprocessor:
         LOGGER.debug(
             "After running the preprocessing # NaNs: %s", postprocessed_nans_counter
         )
-
-        pp_df.to_csv(os.path.join(self.out_dir, file_name))
+        create_dir(os.path.join(self.out_dir, scenario_id))
+        pp_df.to_csv(os.path.join(self.out_dir, scenario_id, file_name))
         LOGGER.info("%s preprocessed!", file_name)
