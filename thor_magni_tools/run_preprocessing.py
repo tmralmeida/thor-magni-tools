@@ -1,8 +1,10 @@
+import os
 import logging
 from argparse import ArgumentParser
+import ray
 
 from .data_tests.logger import CustomFormatter
-from .io import load_yaml_file, create_dir
+from .io import load_yaml_file
 from .preprocessing import TrajectoriesReprocessor
 
 
@@ -19,7 +21,8 @@ parser = ArgumentParser(description="Trajectory Data Preprocessor")
 parser.add_argument(
     "--cfg_file",
     type=str,
-    required=True,
+    required=False,
+    default="thor_magni_tools/preprocessing/cfg.yaml",
     help="Path to the config file",
 )
 
@@ -29,12 +32,32 @@ cfg = load_yaml_file(args.cfg_file)
 run_batch = True
 if cfg["in_path"].endswith(".csv"):
     run_batch = False
-create_dir(cfg["out_path"])
 
-preprocessor = TrajectoriesReprocessor(
-    csv_path=cfg["in_path"],
-    out_path=cfg["out_path"],
-    preprocessing_type=cfg["preprocessing_type"],
-    **cfg["options"]
-)
-preprocessor.run()
+if run_batch:
+
+    @ray.remote
+    def ray_run_processor(processor):
+        return processor.run()
+
+    ray.init()
+    processors = [
+        TrajectoriesReprocessor(
+            csv_path=os.path.join(cfg["in_path"], file_name),
+            out_path=cfg["out_path"],
+            preprocessing_type=cfg["preprocessing_type"],
+            **cfg["options"]
+        )
+        for file_name in os.listdir(cfg["in_path"])
+    ]
+    ray.get(
+            [ray_run_processor.remote(processor) for processor in processors]
+        )
+
+else:
+    preprocessor = TrajectoriesReprocessor(
+        csv_path=cfg["in_path"],
+        out_path=cfg["out_path"],
+        preprocessing_type=cfg["preprocessing_type"],
+        **cfg["options"]
+    )
+    preprocessor.run()
