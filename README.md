@@ -42,4 +42,4 @@ To preprocess the data with interpolation, first one should set the parameters i
 python -m thor_magni_tools.run_preprocessing 
 ```
 
-If [in_path]([cfg file](https://github.com/tmralmeida/thor-magni-tools/blob/main/thor_magni_tools/preprocessing/cfg.yaml#L1) is a folder, it will preprocess the files in the folder in parallel. 
+If [in_path](https://github.com/tmralmeida/thor-magni-tools/blob/main/thor_magni_tools/preprocessing/cfg.yaml#L1) is a folder, it will preprocess the files in the folder in parallel. 
