@@ -44,11 +44,26 @@ class TrajectoriesReprocessor:
         return input_df
 
     @staticmethod
-    def interpolate(input_df: pd.DataFrame, max_nans_interpolate: int) -> pd.DataFrame:
-        """interpolate dataframe"""
+    def reprocessing(
+        input_df: pd.DataFrame, max_nans_interpolate: int, **kwargs
+    ) -> pd.DataFrame:
+        """Repreocessing tha dataframe: interpolation.
+        Optionally: resampling + moving average filter
+
+        Parameters
+        ----------
+        input_df
+            raw input dataframe
+        max_nans_interpolate
+            max number of untracked locations to be interpolated
+
+        Returns
+        -------
+            preprocessed dataframe
+        """
         faulty_columns = input_df.columns[
             input_df.columns.str.startswith(("x", "y", "z", "rot"))
-        ]
+        ].tolist()
         agents_in_scenario = input_df["ag_id"].unique()
         agents_preprocessed = []
         for agent_id in agents_in_scenario:
@@ -58,6 +73,40 @@ class TrajectoriesReprocessor:
                 target_agent_rule_int = TrajectoriesReprocessor.interpolate_with_rule(
                     target_agent_rule_int, col_name, max_nans_interpolate
                 )
+            data_label = target_agent_rule_int["data_label"].iloc[0]
+            marker_id = (
+                target_agent_rule_int["marker_id"].iloc[0]
+                if "marker_id" in target_agent_rule_int.columns
+                else None
+            )
+            if kwargs["resampling_rule"] or kwargs["average_window"]:
+                target_agent_rule_int = target_agent_rule_int.copy()[
+                    ["frame_id"] + faulty_columns
+                ]
+                target_agent_rule_int.index = pd.TimedeltaIndex(
+                    target_agent_rule_int.index, unit="s"
+                )
+            if kwargs["resampling_rule"]:
+                target_agent_rule_int = target_agent_rule_int.resample(
+                    rule=kwargs["resampling_rule"]
+                ).first()
+                LOGGER.debug("resampling applied!")
+            if kwargs["average_window"]:
+                target_agent_rule_int[faulty_columns] = (
+                    target_agent_rule_int[faulty_columns]
+                    .rolling(kwargs["average_window"])
+                    .mean()
+                )
+                LOGGER.debug("average window applied!")
+            if target_agent_rule_int.index.dtype != float:
+                target_agent_rule_int.index = (
+                    target_agent_rule_int.index.total_seconds()
+                )
+                target_agent_rule_int["ag_id"] = agent_id
+                target_agent_rule_int["data_label"] = data_label
+                if marker_id:
+                    target_agent_rule_int["marker_id"] = marker_id
+
             agents_preprocessed.append(target_agent_rule_int)
         interpolated_df = pd.concat(agents_preprocessed, axis=0).sort_index()
         return interpolated_df
@@ -114,8 +163,11 @@ class TrajectoriesReprocessor:
         }
         LOGGER.debug("Pre running the preprocessing # NaNs: %s", pre_nans_counter)
 
-        pp_df = TrajectoriesReprocessor.interpolate(
-            filtered_df, self.args["max_nans_interpolate"]
+        pp_df = TrajectoriesReprocessor.reprocessing(
+            input_df=filtered_df,
+            max_nans_interpolate=self.args["max_nans_interpolate"],
+            resampling_rule=self.args["resampling_rule"],
+            average_window=self.args["average_window"],
         )
         postprocessed_nans_counter = {
             body_name: pp_df[pp_df["ag_id"] == body_name][col_nans].isna().sum()

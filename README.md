@@ -18,7 +18,9 @@ conda env create -f ex_environment.yml && conda activate thor-magni-tools
   * [x] Header/dataframe alignment
 
 * Trajectories preprocessing
-  * [x] Interpolation give a max leap
+  * [x] Interpolation given a max leap
+  * [x] Downsampling given frequency
+  * [x] Smoothing given a moving average window  
 
 
 
