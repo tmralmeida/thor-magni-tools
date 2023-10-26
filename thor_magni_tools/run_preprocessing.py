@@ -45,6 +45,7 @@ if run_batch:
             csv_path=os.path.join(cfg["in_path"], file_name),
             out_path=cfg["out_path"],
             preprocessing_type=cfg["preprocessing_type"],
+            max_nans_interpolate=cfg["max_nans_interpolate"],
             **cfg["options"]
         )
         for file_name in os.listdir(cfg["in_path"])
@@ -58,6 +59,7 @@ else:
         csv_path=cfg["in_path"],
         out_path=cfg["out_path"],
         preprocessing_type=cfg["preprocessing_type"],
+        max_nans_interpolate=cfg["max_nans_interpolate"],
         **cfg["options"]
     )
     preprocessor.run()

@@ -18,11 +18,17 @@ LOGGER.addHandler(ch)
 
 class TrajectoriesReprocessor:
     def __init__(
-        self, csv_path: str, out_path: str, preprocessing_type: str, **kwargs
+        self,
+        csv_path: str,
+        out_path: str,
+        preprocessing_type: str,
+        max_nans_interpolate: int,
+        **kwargs,
     ) -> None:
         self.csv_path = csv_path
         self.out_dir = out_path
         self.pp_type = preprocessing_type
+        self.max_nans_interpolate = max_nans_interpolate
         self.args = kwargs
 
     @staticmethod
@@ -165,7 +171,7 @@ class TrajectoriesReprocessor:
 
         pp_df = TrajectoriesReprocessor.reprocessing(
             input_df=filtered_df,
-            max_nans_interpolate=self.args["max_nans_interpolate"],
+            max_nans_interpolate=self.max_nans_interpolate,
             resampling_rule=self.args["resampling_rule"],
             average_window=self.args["average_window"],
         )
