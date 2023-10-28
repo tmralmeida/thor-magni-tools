@@ -25,6 +25,7 @@ def load_csv_metadata(path: str, header_size: int = 16) -> Tuple[pd.DataFrame, d
         header=header_size,
         index_col=1,
     )
+    raw_df = raw_df.drop_duplicates("Frame")  # TODO: remove when solved issue with dupl.frames
     header_dict = {}
     with open(path, "r", newline="\n") as csvfile:
         csvreader = csv.reader(csvfile)

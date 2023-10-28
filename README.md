@@ -22,6 +22,13 @@ conda env create -f ex_environment.yml && conda activate thor-magni-tools
   * [x] Downsampling given frequency
   * [x] Smoothing given a moving average window  
 
+* Trajectories Analysis
+  * [x] Tracking duration 
+  * [x] Perception noise 
+  * [x] Number of 8 sec tracklets
+  * [x] Motion speed
+  * [x] Path Efficiency
+  * [ ] Minimal distance between people
 
 
 
@@ -45,3 +52,11 @@ python -m thor_magni_tools.run_preprocessing
 ```
 
 If [in_path](https://github.com/tmralmeida/thor-magni-tools/blob/main/thor_magni_tools/preprocessing/cfg.yaml#L1) is a folder, it will preprocess the files in the folder in parallel. 
+
+### TODO 
+Remove [this](https://github.com/tmralmeida/thor-magni-tools-new/blob/main/thor_magni_tools/utils/load.py#L28) when solved issue with duplicated frames
+
+
+### Analysis
+
+TODO: Table
