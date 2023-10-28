@@ -18,6 +18,14 @@ LOGGER.addHandler(ch)
 parser = ArgumentParser(description="Trajectory Data Analyzer")
 
 parser.add_argument(
+    "--dataset_name",
+    type=str,
+    required=True,
+    choices=["thor_magni", "thor", "eth_ucy", "sdd"],
+    help="Name of the dataset",
+)
+
+parser.add_argument(
     "--data_path",
     type=str,
     required=True,
@@ -34,9 +42,10 @@ parser.add_argument(
 
 args = parser.parse_args()
 data_path = args.data_path
+dataset_name = args.dataset_name
 
 run_batch = True
-if args.data_path.endswith(".csv"):
+if args.data_path.endswith((".csv", ".tsv", ".txt")):
     run_batch = False
 
 
@@ -47,7 +56,7 @@ if run_batch:
         perception_noise=True,
         benchmark_metrics=True,
     )
-    global_metrics = global_analyzer.run(data_path)
+    global_metrics = global_analyzer.run(dataset_name, data_path)
     LOGGER.debug("===Logging Global Metrics===")
     log_metrics(LOGGER, global_metrics)
 
@@ -58,6 +67,6 @@ else:
         perception_noise=True,
         benchmark_metrics=True,
     )
-    metrics = dataset_analyzer.run(data_path)
+    metrics = dataset_analyzer.run(dataset_name, data_path)
     LOGGER.debug("Metrics for %s:", data_path.split("/")[-1])
     log_metrics(LOGGER, metrics)

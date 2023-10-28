@@ -1,48 +1,12 @@
-from typing import Tuple
 import ast
-
 import csv
+from typing import Tuple
+import json
+
 import pandas as pd
 
 
-def load_csv_metadata(path: str, header_size: int = 16) -> Tuple[pd.DataFrame, dict]:
-    """Path to the csv file
-
-    Parameters
-    ----------
-    path
-        Path to the csv file
-    header_size
-        Number of rows for the header
-
-    Returns
-    -------
-        Panda DataFrame and Dictionary with the metadata
-    """
-    raw_df = pd.read_csv(
-        path,
-        sep=",",
-        header=header_size,
-        index_col=1,
-    )
-    raw_df = raw_df.drop_duplicates("Frame")  # TODO: remove when solved issue with dupl.frames
-    header_dict = {}
-    with open(path, "r", newline="\n") as csvfile:
-        csvreader = csv.reader(csvfile)
-
-        # Read the first 16 rows and store them in the list
-        for i, row in enumerate(csvreader):
-            if i > header_size - 1:
-                break
-            key = row[0]
-            values = row[1:]
-            values = filter(lambda x: x != "", values)
-            values = [int(v) if v.isnumeric() else v for v in values]
-            header_dict[key] = values
-    return raw_df, header_dict
-
-
-def preprocessing_header(header_dict: dict) -> dict:
+def preprocessing_header_magni(header_dict: dict) -> dict:
     """return header in a more readable manner"""
     new_header_dict = {
         "FILE_ID": header_dict["FILE_ID"][0],
@@ -105,3 +69,50 @@ def preprocessing_header(header_dict: dict) -> dict:
     new_header_dict["SENSOR_DATA"]["EYETRACKING"] = eyetracking_metadata
 
     return new_header_dict
+
+
+def load_csv_metadata_magni(
+    path: str, header_size: int = 16
+) -> Tuple[pd.DataFrame, dict]:
+    """Load THOR-Magni data
+
+    Parameters
+    ----------
+    path
+        Path to the csv file
+    header_size
+        Number of rows for the header
+
+    Returns
+    -------
+        Panda DataFrame and Dictionary with the metadata
+    """
+    raw_df = pd.read_csv(
+        path,
+        sep=",",
+        header=header_size,
+        index_col=1,
+    )
+    raw_df = raw_df.drop_duplicates(
+        "Frame"
+    )  # TODO: remove when solved issue with dupl.frames
+    header_dict = {}
+    with open(path, "r", newline="\n") as csvfile:
+        csvreader = csv.reader(csvfile)
+
+        # Read the first 16 rows and store them in the list
+        for i, row in enumerate(csvreader):
+            if i > header_size - 1:
+                break
+            key = row[0]
+            values = row[1:]
+            values = filter(lambda x: x != "", values)
+            values = [int(v) if v.isnumeric() else v for v in values]
+            header_dict[key] = values
+    return raw_df, header_dict
+
+
+def load_json_file(load_path: str):
+    with open(load_path, "rb") as f:
+        data = json.load(f)
+    return data

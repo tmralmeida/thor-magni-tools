@@ -1,8 +1,7 @@
 from typing import List, Optional
 import pandas as pd
 
-from thor_magni_tools.utils.load import load_csv_metadata, preprocessing_header
-from thor_magni_tools.preprocessing.filtering import Filterer3DOF
+from thor_magni_tools.analysis.dataset_converters import convert_dataset
 from thor_magni_tools.preprocessing import TrajectoriesReprocessor
 from thor_magni_tools.analysis.features import SpatioTemporalFeatures
 
@@ -19,15 +18,6 @@ class DatasetAnalyzer:
         self.tracking_duration = tracking_duration
         self.perception_noise = perception_noise
         self.benchmark_metrics = benchmark_metrics
-
-    @staticmethod
-    def get_dynamic_agents_prefix(scenario_id: str):
-        if scenario_id == "Scenario_1":
-            return ("Helmet",)
-        if scenario_id in ["Scenario_2", "Scenario_3"]:
-            return ("Helmet", "DARKO_Robot", "LO1")
-        if scenario_id in ["Scenario_4", "Scenario_5"]:
-            return ("Helmet", "DARKO_Robot")
 
     @staticmethod
     def get_tracking_columns(df):
@@ -95,20 +85,14 @@ class DatasetAnalyzer:
 
     @staticmethod
     def get_benchmark_metrics(
-        input_df: pd.DataFrame, scenario_id: str, metrics_names: List[str] | str
+        dynamic_agents: pd.DataFrame, metrics_names: List[str] | str
     ):
         metrics_names = (
             [metrics_names] if isinstance(metrics_names, str) else metrics_names
         )
-        dynamic_agents_name = DatasetAnalyzer.get_dynamic_agents_prefix(scenario_id)
-        dynamic_agents = input_df[input_df.ag_id.str.startswith(dynamic_agents_name)]
-        dynamic_agents_meters = dynamic_agents.copy()
-        dynamic_agents_meters[["x", "y", "z"]] /= 1000
         benchmark_metrics = {}
-        for ag_id in dynamic_agents_meters.ag_id.unique():
-            dynamic_object_data = dynamic_agents_meters[
-                dynamic_agents_meters["ag_id"] == ag_id
-            ]
+        for ag_id in dynamic_agents.ag_id.unique():
+            dynamic_object_data = dynamic_agents[dynamic_agents["ag_id"] == ag_id]
             agent_metrics = DatasetAnalyzer.get_continuous_bechmark_metrics(
                 dynamic_object_data, metrics_names
             )
@@ -122,9 +106,7 @@ class DatasetAnalyzer:
         return overall_benchmark_metrics
 
     @staticmethod
-    def get_dataset_tracking_durations(input_df: pd.DataFrame, scenario_id: str):
-        dynamic_agents_name = DatasetAnalyzer.get_dynamic_agents_prefix(scenario_id)
-        dynamic_agents = input_df[input_df.ag_id.str.startswith(dynamic_agents_name)]
+    def get_dataset_tracking_durations(dynamic_agents: pd.DataFrame):
         tracking_duration = {}
         for ag_id in dynamic_agents.ag_id.unique():
             dynamic_object_data = dynamic_agents[dynamic_agents["ag_id"] == ag_id]
@@ -140,16 +122,10 @@ class DatasetAnalyzer:
         return overall_tracking_durations
 
     @staticmethod
-    def get_dataset_perception_noise(input_df: pd.DataFrame, scenario_id: str):
-        dynamic_agents_name = DatasetAnalyzer.get_dynamic_agents_prefix(scenario_id)
-        dynamic_agents = input_df[input_df.ag_id.str.startswith(dynamic_agents_name)]
-        dynamic_agents_meters = dynamic_agents.copy()
-        dynamic_agents_meters[["x", "y", "z"]] /= 1000
+    def get_dataset_perception_noise(dynamic_agents: pd.DataFrame):
         perception_noise = {}
         for ag_id in dynamic_agents.ag_id.unique():
-            dynamic_object_data = dynamic_agents_meters[
-                dynamic_agents_meters["ag_id"] == ag_id
-            ]
+            dynamic_object_data = dynamic_agents[dynamic_agents["ag_id"] == ag_id]
             dynamic_object_data = SpatioTemporalFeatures.get_acceleration(
                 dynamic_object_data
             )[0]
@@ -162,20 +138,11 @@ class DatasetAnalyzer:
             overall_perception_noise.extend(perception_noises)
         return overall_perception_noise
 
-    def load_data(self, data_path: str):
-        raw_df, header_dict = load_csv_metadata(data_path)
-        new_header_dict = preprocessing_header(header_dict)
-        traj_metadata = new_header_dict["SENSOR_DATA"]["TRAJECTORIES"]["METADATA"]
-        roles = {k: metadata["ROLE"] for k, metadata in traj_metadata.items()}
-        return raw_df, roles
-
-    def run(self, data_path: str):
-        scenario_id = data_path.split("/")[-2]
-        raw_df, roles = self.load_data(data_path)
-        best_markers_traj = Filterer3DOF.filter_best_markers(raw_df, roles)
+    def run(self, dataset_name: str, data_path: str):
+        dynamic_agents = convert_dataset(dataset_name, data_path)
         if self.interpolation:
             best_markers_traj = TrajectoriesReprocessor.reprocessing(
-                best_markers_traj,
+                dynamic_agents,
                 max_nans_interpolate=self.interpolation,
                 resampling_rule=None,
                 average_window=None,
@@ -183,12 +150,12 @@ class DatasetAnalyzer:
         metrics = {}
         if self.tracking_duration:
             dataset_tracking_durations = DatasetAnalyzer.get_dataset_tracking_durations(
-                best_markers_traj, scenario_id
+                best_markers_traj
             )
             metrics.update(tracking_duration=dataset_tracking_durations)
         if self.perception_noise:
             dataset_perception_noise = DatasetAnalyzer.get_dataset_perception_noise(
-                best_markers_traj, scenario_id
+                best_markers_traj
             )
             metrics.update(perception_noise=dataset_perception_noise)
         if self.benchmark_metrics:
@@ -200,7 +167,6 @@ class DatasetAnalyzer:
             )
             benchmark_metrics = DatasetAnalyzer.get_benchmark_metrics(
                 best_markers_traj,
-                scenario_id,
                 metrics_names=["motion_speed", "path_efficiency"],
             )
             metrics.update(benchmark_metrics)

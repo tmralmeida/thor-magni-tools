@@ -3,8 +3,8 @@ import logging
 import pandas as pd
 
 from .filtering import Filterer3DOF, Filterer6DOF
+from ..utils.load import load_csv_metadata_magni, preprocessing_header_magni
 from ..data_tests.logger import CustomFormatter
-from ..utils.load import load_csv_metadata, preprocessing_header
 from ..io import create_dir
 
 
@@ -137,8 +137,8 @@ class TrajectoriesReprocessor:
     def run(self):
         split_path = self.csv_path.split("/")
         scenario_id, file_name = split_path[-2], split_path[-1]
-        raw_df, header_dict = load_csv_metadata(self.csv_path)
-        pp_header_dict = preprocessing_header(header_dict)
+        raw_df, header_dict = load_csv_metadata_magni(self.csv_path)
+        pp_header_dict = preprocessing_header_magni(header_dict)
         traj_metadata = pp_header_dict["SENSOR_DATA"]["TRAJECTORIES"]["METADATA"]
 
         target_columns_atts = self.get_target_columns_attributes(traj_metadata)
