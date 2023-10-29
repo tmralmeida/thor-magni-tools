@@ -59,10 +59,10 @@ class DatasetAnalyzer:
                 speed_tracklets, path_eff_tracklets
             ):
                 agent_metrics["motion_speed"].extend(
-                    speed_track["speed"].values.tolist()
+                    speed_track.iloc[1:]["speed"].values.tolist()
                 )
                 agent_metrics["path_efficiency"].append(
-                    path_eff_track["path_efficiency"].iloc[-1]
+                    path_eff_track.iloc[1:]["path_efficiency"].iloc[-1]
                 )
         return agent_metrics
 
