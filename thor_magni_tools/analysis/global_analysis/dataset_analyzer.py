@@ -45,24 +45,25 @@ class DatasetAnalyzer:
             if group[tracking_cols].isna().any(axis=0).all():
                 continue
             num_tracklets = len(group) // tracklet_len
-            if num_tracklets > 0:
-                tracklets = [
-                    group.iloc[i * tracklet_len: (i + 1) * tracklet_len]
-                    for i in range(num_tracklets)
-                ]
-                speed_tracklets = SpatioTemporalFeatures.get_speed(tracklets)
-                path_eff_tracklets = SpatioTemporalFeatures.get_path_efficiency_index(
-                    speed_tracklets
+            if num_tracklets == 0:
+                continue
+            tracklets = [
+                group.iloc[i * tracklet_len: (i + 1) * tracklet_len]
+                for i in range(num_tracklets)
+            ]
+            speed_tracklets = SpatioTemporalFeatures.get_speed(tracklets)
+            path_eff_tracklets = SpatioTemporalFeatures.get_path_efficiency_index(
+                speed_tracklets
+            )
+            for speed_track, path_eff_track in zip(
+                speed_tracklets, path_eff_tracklets
+            ):
+                agent_metrics["motion_speed"].extend(
+                    speed_track["speed"].values.tolist()
                 )
-                for speed_track, path_eff_track in zip(
-                    speed_tracklets, path_eff_tracklets
-                ):
-                    agent_metrics["motion_speed"].extend(
-                        speed_track["speed"].values.tolist()
-                    )
-                    agent_metrics["path_efficiency"].append(
-                        path_eff_track["path_efficiency"].iloc[-1]
-                    )
+                agent_metrics["path_efficiency"].append(
+                    path_eff_track["path_efficiency"].iloc[-1]
+                )
         return agent_metrics
 
     @staticmethod
