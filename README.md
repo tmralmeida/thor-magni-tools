@@ -30,6 +30,11 @@ conda env create -f ex_environment.yml && conda activate thor-magni-tools
   * [x] Path Efficiency
   * [ ] Minimal distance between people
 
+* Dataset Comparison
+  * [x] THÖR
+  * [x] ETH/UCY
+  * [ ] SDD
+
 
 
 ## Running

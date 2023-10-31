@@ -71,6 +71,7 @@ class TrajectoriesReprocessor:
             input_df.columns.str.startswith(("x", "y", "z", "rot"))
         ].tolist()
         agents_in_scenario = input_df["ag_id"].unique()
+        data_lbl_col = True if "data_label" in input_df.columns else False
         agents_preprocessed = []
         for agent_id in agents_in_scenario:
             target_agent = input_df[input_df["ag_id"] == agent_id]
@@ -79,7 +80,8 @@ class TrajectoriesReprocessor:
                 target_agent_rule_int = TrajectoriesReprocessor.interpolate_with_rule(
                     target_agent_rule_int, col_name, max_nans_interpolate
                 )
-            data_label = target_agent_rule_int["data_label"].iloc[0]
+            if data_lbl_col:
+                data_label = target_agent_rule_int["data_label"].iloc[0]
             marker_id = (
                 target_agent_rule_int["marker_id"].iloc[0]
                 if "marker_id" in target_agent_rule_int.columns
@@ -109,7 +111,8 @@ class TrajectoriesReprocessor:
                     target_agent_rule_int.index.total_seconds()
                 )
                 target_agent_rule_int["ag_id"] = agent_id
-                target_agent_rule_int["data_label"] = data_label
+                if data_lbl_col:
+                    target_agent_rule_int["data_label"] = data_label
                 if marker_id:
                     target_agent_rule_int["marker_id"] = marker_id
 

@@ -55,9 +55,7 @@ class DatasetAnalyzer:
             path_eff_tracklets = SpatioTemporalFeatures.get_path_efficiency_index(
                 speed_tracklets
             )
-            for speed_track, path_eff_track in zip(
-                speed_tracklets, path_eff_tracklets
-            ):
+            for speed_track, path_eff_track in zip(speed_tracklets, path_eff_tracklets):
                 agent_metrics["motion_speed"].extend(
                     speed_track.iloc[1:]["speed"].values.tolist()
                 )
@@ -159,12 +157,13 @@ class DatasetAnalyzer:
             )
             metrics.update(perception_noise=dataset_perception_noise)
         if self.benchmark_metrics:
-            best_markers_traj = TrajectoriesReprocessor.reprocessing(
-                best_markers_traj,
-                max_nans_interpolate=self.interpolation,
-                resampling_rule="400ms",
-                average_window="800ms",
-            )
+            if dataset_name in ["thor", "thor_magni"]:
+                best_markers_traj = TrajectoriesReprocessor.reprocessing(
+                    best_markers_traj,
+                    max_nans_interpolate=self.interpolation,
+                    resampling_rule="400ms",
+                    average_window="800ms",
+                )
             benchmark_metrics = DatasetAnalyzer.get_benchmark_metrics(
                 best_markers_traj,
                 metrics_names=["motion_speed", "path_efficiency"],

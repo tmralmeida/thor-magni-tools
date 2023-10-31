@@ -1,5 +1,7 @@
 import numpy as np
 
+AVAILABLE_SCENARIOS = ["Scenario", "eth", "univ", "zara1", "zara2", "hotel"]
+
 
 def log_metrics(logger, metrics):
     for metric_name, metric_value in metrics.items():
@@ -14,3 +16,4 @@ def log_metrics(logger, metrics):
         )
         if metric_name == "path_efficiency":
             logger.debug("Number of tracklets in the benchmark: %d", len(metric_value))
+

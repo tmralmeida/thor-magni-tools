@@ -4,7 +4,7 @@ from typing import Optional
 
 from ...data_tests.logger import CustomFormatter
 from .dataset_analyzer import DatasetAnalyzer
-from ..utils import log_metrics
+from ..utils import log_metrics, AVAILABLE_SCENARIOS
 
 
 LOGGER = logging.getLogger(__name__)
@@ -42,7 +42,10 @@ class GlobalAnalyzer:
         for root, _, files in os.walk(data_path, topdown=True):
             if len(files) > 0:
                 scenario_id = [
-                    split for split in root.split("/") if "Scenario" in split
+                    split
+                    for split in root.split("/")
+                    for ds in AVAILABLE_SCENARIOS
+                    if ds in split
                 ][0]
                 metrics[scenario_id] = {}
                 for i, file_id in enumerate(files):
