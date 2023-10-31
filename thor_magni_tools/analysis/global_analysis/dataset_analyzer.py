@@ -141,13 +141,12 @@ class DatasetAnalyzer:
 
     def run(self, dataset_name: str, data_path: str):
         dynamic_agents = convert_dataset(dataset_name, data_path)
-        if self.interpolation:
-            best_markers_traj = TrajectoriesReprocessor.reprocessing(
-                dynamic_agents,
-                max_nans_interpolate=self.interpolation,
-                resampling_rule=None,
-                average_window=None,
-            )
+        best_markers_traj = TrajectoriesReprocessor.reprocessing(
+            dynamic_agents,
+            max_nans_interpolate=self.interpolation,
+            resampling_rule=None,
+            average_window=None,
+        )
         metrics = {}
         if self.tracking_duration:
             dataset_tracking_durations = DatasetAnalyzer.get_dataset_tracking_durations(
