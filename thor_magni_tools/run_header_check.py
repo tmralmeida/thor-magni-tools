@@ -3,7 +3,7 @@ import logging
 from argparse import ArgumentParser
 
 from .data_tests.logger import CustomFormatter
-from .utils.load import load_csv_metadata, preprocessing_header
+from .utils.load import load_csv_metadata_magni, preprocessing_header_magni
 from .data_tests.test_csv import validate_header, validate_header_with_dataframe
 
 
@@ -38,7 +38,7 @@ files_list = os.listdir(root_path)
 
 for _fn in files_list:
     LOGGER.debug("Running file: %s", _fn)
-    raw_df, header_dict = load_csv_metadata(os.path.join(root_path, _fn))
-    new_header_dict = preprocessing_header(header_dict)
+    raw_df, header_dict = load_csv_metadata_magni(os.path.join(root_path, _fn))
+    new_header_dict = preprocessing_header_magni(header_dict)
     validate_header(_fn, new_header_dict)
     validate_header_with_dataframe(new_header_dict, raw_df)
