@@ -51,22 +51,25 @@ if args.data_path.endswith((".csv", ".tsv", ".txt")):
 
 if run_batch:
     global_analyzer = GlobalAnalyzer(
+        dataset_name=dataset_name,
         interpolation=args.interpolation,
         tracking_duration=True,
         perception_noise=True,
         benchmark_metrics=True,
+        save_path="outputs/analysis"
     )
-    global_metrics = global_analyzer.run(dataset_name, data_path)
+    global_metrics = global_analyzer.run(data_path)
     LOGGER.debug("===Logging Global Metrics===")
     log_metrics(LOGGER, global_metrics)
 
 else:
     dataset_analyzer = DatasetAnalyzer(
+        dataset_name=dataset_name,
         interpolation=args.interpolation,
         tracking_duration=True,
         perception_noise=True,
         benchmark_metrics=True,
     )
-    metrics = dataset_analyzer.run(dataset_name, data_path)
+    metrics = dataset_analyzer.run(data_path)
     LOGGER.debug("Metrics for %s:", data_path.split("/")[-1])
     log_metrics(LOGGER, metrics)

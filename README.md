@@ -33,7 +33,8 @@ conda env create -f ex_environment.yml && conda activate thor-magni-tools
 * Dataset Comparison
   * [x] THÖR
   * [x] ETH/UCY
-  * [ ] SDD
+  * [x] SDD
+  * [ ] ATC
 
 
 
@@ -63,5 +64,18 @@ Remove [this](https://github.com/tmralmeida/thor-magni-tools-new/blob/main/thor_
 
 
 ### Analysis
+
+```
+python -m thor_magni_tools.run_analysis --data_path=DATASET_FOLDER OR DATASET FILE --dataset DATASET_NAME 
+```
+
+Optional Arguments:
+
+| Parameter                 | Default       | Description   |	
+| :------------------------ |:-------------:| :-------------|
+| --interpolation 	        |	None          |used to preprocess the dataset. Max frames without tracking |
+
+
+
 
 TODO: Table

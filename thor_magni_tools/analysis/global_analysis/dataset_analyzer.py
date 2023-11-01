@@ -9,11 +9,13 @@ from thor_magni_tools.analysis.features import SpatioTemporalFeatures
 class DatasetAnalyzer:
     def __init__(
         self,
+        dataset_name: str,
         interpolation: Optional[int],
         tracking_duration: bool,
         perception_noise: bool,
         benchmark_metrics: bool,
     ) -> None:
+        self.dataset_name = dataset_name
         self.interpolation = interpolation
         self.tracking_duration = tracking_duration
         self.perception_noise = perception_noise
@@ -137,8 +139,8 @@ class DatasetAnalyzer:
             overall_perception_noise.extend(perception_noises)
         return overall_perception_noise
 
-    def run(self, dataset_name: str, data_path: str):
-        dynamic_agents = convert_dataset(dataset_name, data_path)
+    def run(self, data_path: str):
+        dynamic_agents = convert_dataset(self.dataset_name, data_path)
         best_markers_traj = TrajectoriesReprocessor.reprocessing(
             dynamic_agents,
             max_nans_interpolate=self.interpolation,
@@ -157,7 +159,7 @@ class DatasetAnalyzer:
             )
             metrics.update(perception_noise=dataset_perception_noise)
         if self.benchmark_metrics:
-            if dataset_name in ["thor", "thor_magni"]:
+            if self.dataset_name in ["thor", "thor_magni"]:
                 best_markers_traj = TrajectoriesReprocessor.reprocessing(
                     best_markers_traj,
                     max_nans_interpolate=self.interpolation,
