@@ -21,6 +21,7 @@ AVAILABLE_SCENARIOS = [
     "deathCircle",
     "quad",
     "hyang",
+    "atc-tracking-part1"
 ]
 
 

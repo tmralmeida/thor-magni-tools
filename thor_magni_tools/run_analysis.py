@@ -21,7 +21,7 @@ parser.add_argument(
     "--dataset_name",
     type=str,
     required=True,
-    choices=["thor_magni", "thor", "eth_ucy", "sdd"],
+    choices=["thor_magni", "thor", "eth_ucy", "sdd", "atc"],
     help="Name of the dataset",
 )
 

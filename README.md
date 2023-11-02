@@ -39,7 +39,7 @@ conda env create -f ex_environment.yml && conda activate thor-magni-tools
   * [x] THÖR
   * [x] ETH/UCY
   * [x] SDD
-  * [ ] ATC
+  * [x] ATC
 
 
 
