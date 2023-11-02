@@ -1,9 +1,24 @@
+import logging
+from itertools import combinations
 from typing import List, Optional
 import pandas as pd
+import numpy as np
 
+from thor_magni_tools.data_tests.logger import CustomFormatter
 from thor_magni_tools.analysis.dataset_converters import convert_dataset
 from thor_magni_tools.preprocessing import TrajectoriesReprocessor
-from thor_magni_tools.analysis.features import SpatioTemporalFeatures
+from thor_magni_tools.analysis.features import (
+    SpatioTemporalFeatures,
+    pairwise_distances,
+)
+
+
+LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+ch.setFormatter(CustomFormatter())
+LOGGER.addHandler(ch)
 
 
 class DatasetAnalyzer:
@@ -13,6 +28,7 @@ class DatasetAnalyzer:
         interpolation: Optional[int],
         tracking_duration: bool,
         perception_noise: bool,
+        min_social_distance: bool,
         benchmark_metrics: bool,
     ) -> None:
         self.dataset_name = dataset_name
@@ -20,6 +36,7 @@ class DatasetAnalyzer:
         self.tracking_duration = tracking_duration
         self.perception_noise = perception_noise
         self.benchmark_metrics = benchmark_metrics
+        self.min_social_distance = min_social_distance
 
     @staticmethod
     def get_tracking_columns(df):
@@ -139,36 +156,74 @@ class DatasetAnalyzer:
             overall_perception_noise.extend(perception_noises)
         return overall_perception_noise
 
+    @staticmethod
+    def get_dataset_min_social_distances(dynamic_agents: pd.DataFrame):
+        humans = dynamic_agents[~dynamic_agents.ag_id.str.startswith(("DARKO", "LO"))]
+        grouped_frames = humans.groupby("Time")
+        distances, min_distances = {}, []
+        for time, group in grouped_frames:
+            distances[time], distances_ts = [], []
+            points = group[["x", "y"]].values
+            agents_ids = group["ag_id"].values
+            pairwise_dist_matrix = pairwise_distances(points)
+            np.fill_diagonal(pairwise_dist_matrix, np.inf)
+            agents_combinations = list(combinations(range(len(agents_ids)), 2))
+            for i, j in agents_combinations:
+                if not np.isnan(pairwise_dist_matrix[i, j]):
+                    distances[time].append(
+                        {
+                            "ag_id1": agents_ids[i],
+                            "ag_id2": agents_ids[j],
+                            "distance": pairwise_dist_matrix[i, j],
+                        }
+                    )
+
+                    distances_ts.append(pairwise_dist_matrix[i, j])
+            if len(distances_ts) > 0:
+                min_distances.append(min(distances_ts))
+        return min_distances
+
     def run(self, data_path: str, **kwargs):
         dynamic_agents = convert_dataset(self.dataset_name, data_path, **kwargs)
-        best_markers_traj = TrajectoriesReprocessor.reprocessing(
-            dynamic_agents,
-            max_nans_interpolate=self.interpolation,
-            resampling_rule=None,
-            average_window=None,
-        )
+        if self.interpolation:
+            dynamic_agents = TrajectoriesReprocessor.reprocessing(
+                dynamic_agents,
+                max_nans_interpolate=self.interpolation,
+                resampling_rule=None,
+                average_window=None,
+            )
+            LOGGER.debug("Dataset interpolated")
         metrics = {}
         if self.tracking_duration:
             dataset_tracking_durations = DatasetAnalyzer.get_dataset_tracking_durations(
-                best_markers_traj
+                dynamic_agents
             )
             metrics.update(tracking_duration=dataset_tracking_durations)
+            LOGGER.info("Tracking duration computed")
         if self.perception_noise:
             dataset_perception_noise = DatasetAnalyzer.get_dataset_perception_noise(
-                best_markers_traj
+                dynamic_agents
             )
             metrics.update(perception_noise=dataset_perception_noise)
+            LOGGER.info("Perception noise computed")
+        if self.min_social_distance:
+            dataset_min_social_distances = (
+                DatasetAnalyzer.get_dataset_min_social_distances(dynamic_agents)
+            )
+            metrics.update(min_social_distances=dataset_min_social_distances)
+            LOGGER.info("Min. social distances computed")
         if self.benchmark_metrics:
             if self.dataset_name in ["thor", "thor_magni"]:
-                best_markers_traj = TrajectoriesReprocessor.reprocessing(
-                    best_markers_traj,
+                dynamic_agents = TrajectoriesReprocessor.reprocessing(
+                    dynamic_agents,
                     max_nans_interpolate=self.interpolation,
                     resampling_rule="400ms",
                     average_window="800ms",
                 )
             benchmark_metrics = DatasetAnalyzer.get_benchmark_metrics(
-                best_markers_traj,
+                dynamic_agents,
                 metrics_names=["motion_speed", "path_efficiency"],
             )
             metrics.update(benchmark_metrics)
+            LOGGER.info("Benchmark metrics computed")
         return metrics

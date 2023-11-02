@@ -22,6 +22,7 @@ class GlobalAnalyzer:
         interpolation: Optional[int],
         tracking_duration: bool,
         perception_noise: bool,
+        min_social_distance: bool,
         benchmark_metrics: bool,
         save_path: str,
     ) -> None:
@@ -29,6 +30,7 @@ class GlobalAnalyzer:
         self.interpolation = interpolation
         self.tracking_duration = tracking_duration
         self.perception_noise = perception_noise
+        self.min_social_distance = min_social_distance
         self.benchmark_metrics = benchmark_metrics
         self.result_saver = ResultSaver(os.path.join(save_path, dataset_name))
 
@@ -64,6 +66,7 @@ class GlobalAnalyzer:
                         tracking_duration=self.tracking_duration,
                         perception_noise=self.perception_noise,
                         benchmark_metrics=self.benchmark_metrics,
+                        min_social_distance=self.min_social_distance,
                     )
                     metrics_dataset = dataset_analyzer.run(file_path, **kwargs)
                     if i == 0:

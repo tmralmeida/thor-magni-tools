@@ -33,7 +33,7 @@ conda env create -f ex_environment.yml && conda activate thor-magni-tools
   * [x] Number of 8 sec tracklets
   * [x] Motion speed
   * [x] Path Efficiency
-  * [ ] Minimal distance between people
+  * [x] Minimal distance between people
 
 * Dataset Comparison
   * [x] THÖR
