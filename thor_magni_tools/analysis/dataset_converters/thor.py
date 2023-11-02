@@ -69,7 +69,7 @@ class ThorConverter:
         return dfs
 
     @staticmethod
-    def convert(data_path: str, roles_path: str):
+    def convert(data_path: str, roles_path: str, filtering_markers: str):
         data_path_split = data_path.split("/")
         file_name, scenario_id = data_path_split[-1], data_path_split[-2]
         re_pattern = re.compile(r"Exp_(\d)_run_(\d)")
@@ -84,12 +84,17 @@ class ThorConverter:
         all_roles = load_json_file(roles_path)
         scenario_roles = ThorConverter.get_roles(all_roles, scenario_id, run_id)
         raw_df = ThorConverter.replace_zeros_by_nans(raw_df)
-        best_markers_traj = Filterer3DOF.filter_best_markers(raw_df, scenario_roles)
+        if filtering_markers == "3D-best_marker":
+            filtered_markers_traj = Filterer3DOF.filter_best_markers(
+                raw_df, scenario_roles
+            )
+        elif filtering_markers == "3D-restoration":
+            filtered_markers_traj = Filterer3DOF.restore_markers(raw_df, scenario_roles)
         dynamic_agents_name = ThorConverter.get_dynamic_agents_prefix(
             scenario_id=scenario_id
         )
-        dynamic_agents = best_markers_traj[
-            best_markers_traj.ag_id.str.startswith(dynamic_agents_name)
+        dynamic_agents = filtered_markers_traj[
+            filtered_markers_traj.ag_id.str.startswith(dynamic_agents_name)
         ]
         dynamic_agents_meters = dynamic_agents.copy()
         dynamic_agents_meters[["x", "y", "z"]] /= 1000

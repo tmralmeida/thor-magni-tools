@@ -41,7 +41,7 @@ class GlobalAnalyzer:
                 new_metrics[metric_name].extend(metric_values)
         return new_metrics
 
-    def run(self, data_path: str):
+    def run(self, data_path: str, **kwargs):
         metrics = {}
         for root, _, files in os.walk(data_path, topdown=True):
             target_files = list(
@@ -65,7 +65,7 @@ class GlobalAnalyzer:
                         perception_noise=self.perception_noise,
                         benchmark_metrics=self.benchmark_metrics,
                     )
-                    metrics_dataset = dataset_analyzer.run(file_path)
+                    metrics_dataset = dataset_analyzer.run(file_path, **kwargs)
                     if i == 0:
                         metrics[scenario_id] = {
                             metric_name: [] for metric_name in metrics_dataset.keys()

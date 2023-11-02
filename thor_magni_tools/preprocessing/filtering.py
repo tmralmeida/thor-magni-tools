@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Optional
 import pandas as pd
 
 
@@ -26,7 +26,10 @@ class Filterer3DOF:
 
     @staticmethod
     def reorganize_df(
-        input_df: pd.DataFrame, ag_id: str, best_marker_id: int, role: str
+        input_df: pd.DataFrame,
+        ag_id: str,
+        role: str,
+        best_marker_id: Optional[int] = None,
     ) -> pd.DataFrame:
         """Reorganize DataFrame structure
         Output:
@@ -46,17 +49,30 @@ class Filterer3DOF:
         -------
             reorganized pandas DataFrame
         """
-        return pd.DataFrame(
-            {
-                "frame_id": input_df.Frame,
-                "ag_id": ag_id,
-                "x": input_df[f"{ag_id} - {best_marker_id} X"],
-                "y": input_df[f"{ag_id} - {best_marker_id} Y"],
-                "z": input_df[f"{ag_id} - {best_marker_id} Z"],
-                "data_label": role,
-                "marker_id": best_marker_id,
-            }
-        )
+        if best_marker_id:
+            out_df = pd.DataFrame(
+                {
+                    "frame_id": input_df.Frame,
+                    "ag_id": ag_id,
+                    "x": input_df[f"{ag_id} - {best_marker_id} X"],
+                    "y": input_df[f"{ag_id} - {best_marker_id} Y"],
+                    "z": input_df[f"{ag_id} - {best_marker_id} Z"],
+                    "data_label": role,
+                    "best_marker_id": best_marker_id,
+                }
+            )
+        else:  # restoration
+            out_df = pd.DataFrame(
+                {
+                    "frame_id": input_df.Frame,
+                    "ag_id": ag_id,
+                    "x": input_df[f"{ag_id} X"],
+                    "y": input_df[f"{ag_id} Y"],
+                    "z": input_df[f"{ag_id} Z"],
+                    "data_label": role,
+                }
+            )
+        return out_df
 
     @staticmethod
     def filter_best_markers(input_df: pd.DataFrame, roles: dict) -> pd.DataFrame:
@@ -86,10 +102,63 @@ class Filterer3DOF:
                 key=nans_counter.get,
             )
             out_df = Filterer3DOF.reorganize_df(
-                input_df, instance_id, best_marker_id, roles[instance_id]
+                input_df,
+                instance_id,
+                roles[instance_id],
+                best_marker_id,
             )
             elements_filtered_by_best_marker.append(out_df)
         out_df = pd.concat(elements_filtered_by_best_marker, axis=0)
+        out_df = out_df.sort_index()
+        return out_df
+
+    @staticmethod
+    def restore_markers(input_df: pd.DataFrame, roles: dict) -> pd.DataFrame:
+        """Restore markers based on the average tracked location
+        Output:
+        |Time|frame_id|ag_id|x|y|z|data_label|marker_id
+
+        marker_id column -> best marker based on the argmin(NaNs)
+
+        Parameters
+        ----------
+        input_df
+            raw_df
+        nan_counter_by_marker
+            counter of number of NaNs per marker
+        roles
+            ongoing activity wrt the trajectory
+        Returns
+        -------
+            Filtered DataFrame
+        """
+        instances = set(input_df.columns.str.split(" - ").str[0])
+        instances = list(filter(lambda x: len(x.split(" ")) == 1, instances))
+        dfs_restored = []
+        for instance_id in instances:
+            if instance_id == "Frame":
+                continue
+            instance_df = input_df[
+                ["Frame"]
+                + input_df.columns[
+                    input_df.columns.str.startswith(f"{instance_id} ")
+                ].tolist()
+            ]
+            instance_cols = instance_df.columns
+            new_axes_df = {f"{instance_id} {axis}": None for axis in ["X", "Y", "Z"]}
+            for axis in [" X", " Y", " Z"]:
+                axis_df = instance_df[
+                    instance_cols[instance_df.columns.str.endswith(axis)]
+                ]
+                axis_mean = axis_df.mean(axis=1, skipna=True, numeric_only=True)
+                new_axes_df[f"{instance_id}{axis}"] = axis_mean
+            new_axes_df = pd.DataFrame.from_dict(new_axes_df)
+            new_axes_df["Frame"] = instance_df["Frame"]
+            out_df = Filterer3DOF.reorganize_df(
+                new_axes_df, instance_id, roles[instance_id]
+            )
+            dfs_restored.append(out_df)
+        out_df = pd.concat(dfs_restored, axis=0)
         out_df = out_df.sort_index()
         return out_df
 

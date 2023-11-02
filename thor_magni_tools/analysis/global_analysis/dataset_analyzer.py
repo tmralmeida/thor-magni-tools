@@ -139,8 +139,8 @@ class DatasetAnalyzer:
             overall_perception_noise.extend(perception_noises)
         return overall_perception_noise
 
-    def run(self, data_path: str):
-        dynamic_agents = convert_dataset(self.dataset_name, data_path)
+    def run(self, data_path: str, **kwargs):
+        dynamic_agents = convert_dataset(self.dataset_name, data_path, **kwargs)
         best_markers_traj = TrajectoriesReprocessor.reprocessing(
             dynamic_agents,
             max_nans_interpolate=self.interpolation,

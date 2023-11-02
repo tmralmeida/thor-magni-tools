@@ -40,6 +40,15 @@ parser.add_argument(
     help="Interpolation max leap",
 )
 
+parser.add_argument(
+    "--filtering_markers",
+    type=str,
+    required=False,
+    choices=["3D-best_marker", "3D-restoration"],
+    default="3D-best_marker",
+    help="Filtering markers procedure.",
+)
+
 args = parser.parse_args()
 data_path = args.data_path
 dataset_name = args.dataset_name
@@ -48,6 +57,9 @@ run_batch = True
 if args.data_path.endswith((".csv", ".tsv", ".txt")):
     run_batch = False
 
+extra_args = None
+if dataset_name:
+    extra_args = dict(filtering_markers=args.filtering_markers)
 
 if run_batch:
     global_analyzer = GlobalAnalyzer(
@@ -56,9 +68,9 @@ if run_batch:
         tracking_duration=True,
         perception_noise=True,
         benchmark_metrics=True,
-        save_path="outputs/analysis"
+        save_path="outputs/analysis",
     )
-    global_metrics = global_analyzer.run(data_path)
+    global_metrics = global_analyzer.run(data_path, **extra_args)
     LOGGER.debug("===Logging Global Metrics===")
     log_metrics(LOGGER, global_metrics)
 
@@ -70,6 +82,6 @@ else:
         perception_noise=True,
         benchmark_metrics=True,
     )
-    metrics = dataset_analyzer.run(data_path)
+    metrics = dataset_analyzer.run(data_path, **extra_args)
     LOGGER.debug("Metrics for %s:", data_path.split("/")[-1])
     log_metrics(LOGGER, metrics)

@@ -160,8 +160,11 @@ class TrajectoriesReprocessor:
         if self.pp_type == "6D":
             filtered_df = Filterer6DOF.reorganize_df(target_data, target_agents, roles)
             col_nans = "x_centroid"
-        elif self.pp_type == "3D":
+        elif self.pp_type == "3D-best_marker":
             filtered_df = Filterer3DOF.filter_best_markers(target_data, roles)
+            col_nans = "x"
+        elif self.pp_type == "3D-restoration":
+            filtered_df = Filterer3DOF.restore_markers(target_data, roles)
             col_nans = "x"
 
         pre_nans_counter = {

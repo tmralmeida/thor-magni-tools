@@ -17,6 +17,11 @@ conda env create -f ex_environment.yml && conda activate thor-magni-tools
   * [x] Header checker
   * [x] Header/dataframe alignment
 
+* THÖR/THÖR-Magni trackings filtering:
+  * [x] Best marker
+  * [x] Tracking restoring 
+
+
 * Trajectories preprocessing
   * [x] Interpolation given a max leap
   * [x] Downsampling given frequency
@@ -74,6 +79,7 @@ Optional Arguments:
 | Parameter                 | Default       | Description   |	
 | :------------------------ |:-------------:| :-------------|
 | --interpolation 	        |	None          |used to preprocess the dataset. Max frames without tracking |
+| --filtering_markers 	    |	None          |used to filtering THÖR/THÖR-Magni tracks |
 
 
 
