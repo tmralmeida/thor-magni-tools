@@ -158,11 +158,14 @@ class DatasetAnalyzer:
 
     @staticmethod
     def get_dataset_min_social_distances(dynamic_agents: pd.DataFrame):
-        humans = dynamic_agents[~dynamic_agents.ag_id.str.startswith(("DARKO", "LO"))]
-        grouped_frames = humans.groupby("Time")
+        if dynamic_agents.ag_id.dtype == str:
+            humans = dynamic_agents[~dynamic_agents.ag_id.str.startswith(("DARKO", "LO"))]
+        else:
+            humans = dynamic_agents
+        grouped_frames = humans.groupby("frame_id")
         distances, min_distances = {}, []
-        for time, group in grouped_frames:
-            distances[time], distances_ts = [], []
+        for frame, group in grouped_frames:
+            distances[frame], distances_ts = [], []
             points = group[["x", "y"]].values
             agents_ids = group["ag_id"].values
             pairwise_dist_matrix = pairwise_distances(points)
@@ -170,7 +173,7 @@ class DatasetAnalyzer:
             agents_combinations = list(combinations(range(len(agents_ids)), 2))
             for i, j in agents_combinations:
                 if not np.isnan(pairwise_dist_matrix[i, j]):
-                    distances[time].append(
+                    distances[frame].append(
                         {
                             "ag_id1": agents_ids[i],
                             "ag_id2": agents_ids[j],
