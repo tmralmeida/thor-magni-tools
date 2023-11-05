@@ -1,5 +1,6 @@
 import os
 import logging
+from typing import Optional
 import pandas as pd
 
 from .filtering import Filterer3DOF, Filterer6DOF
@@ -51,7 +52,7 @@ class TrajectoriesReprocessor:
 
     @staticmethod
     def reprocessing(
-        input_df: pd.DataFrame, max_nans_interpolate: int, **kwargs
+        input_df: pd.DataFrame, max_nans_interpolate: Optional[int], **kwargs
     ) -> pd.DataFrame:
         """Repreocessing tha dataframe: interpolation.
         Optionally: resampling + moving average filter
@@ -76,10 +77,12 @@ class TrajectoriesReprocessor:
         for agent_id in agents_in_scenario:
             target_agent = input_df[input_df["ag_id"] == agent_id]
             target_agent_rule_int = target_agent.copy()
-            for col_name in faulty_columns:
-                target_agent_rule_int = TrajectoriesReprocessor.interpolate_with_rule(
-                    target_agent_rule_int, col_name, max_nans_interpolate
-                )
+            if max_nans_interpolate:
+                for col_name in faulty_columns:
+                    target_agent_rule_int = TrajectoriesReprocessor.interpolate_with_rule(
+                        target_agent_rule_int, col_name, max_nans_interpolate
+                    )
+                LOGGER.debug("interpolation applied!")
             if data_lbl_col:
                 data_label = target_agent_rule_int["data_label"].iloc[0]
             marker_id = (
