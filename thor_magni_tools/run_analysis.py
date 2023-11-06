@@ -39,6 +39,13 @@ parser.add_argument(
     default=None,
     help="Interpolation max leap",
 )
+parser.add_argument(
+    "--average_window",
+    type=str,
+    required=False,
+    default=None,
+    help="Moving average window in ms. E.g '400ms'",
+)
 
 parser.add_argument(
     "--filtering_markers",
@@ -65,6 +72,7 @@ if run_batch:
     global_analyzer = GlobalAnalyzer(
         dataset_name=dataset_name,
         interpolation=args.interpolation,
+        average_window=args.average_window,
         tracking_duration=True,
         perception_noise=True,
         min_social_distance=True,
@@ -79,6 +87,7 @@ else:
     dataset_analyzer = DatasetAnalyzer(
         dataset_name=dataset_name,
         interpolation=args.interpolation,
+        average_window=args.average_window,
         tracking_duration=True,
         perception_noise=True,
         min_social_distance=True,

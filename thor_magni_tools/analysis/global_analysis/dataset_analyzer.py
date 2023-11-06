@@ -26,6 +26,7 @@ class DatasetAnalyzer:
         self,
         dataset_name: str,
         interpolation: Optional[int],
+        average_window: Optional[str],
         tracking_duration: bool,
         perception_noise: bool,
         min_social_distance: bool,
@@ -33,6 +34,7 @@ class DatasetAnalyzer:
     ) -> None:
         self.dataset_name = dataset_name
         self.interpolation = interpolation
+        self.average_window = average_window
         self.tracking_duration = tracking_duration
         self.perception_noise = perception_noise
         self.benchmark_metrics = benchmark_metrics
@@ -98,7 +100,7 @@ class DatasetAnalyzer:
             if metric_name == "tracking_duration":
                 continous_tracking_metrics.append(group.index[-1] - group.index[0])
             elif metric_name == "perception_noise":
-                continous_tracking_metrics.extend(group["acceleration"].values.tolist())
+                continous_tracking_metrics.extend(group["acceleration"].values[1:].tolist())
         return continous_tracking_metrics
 
     @staticmethod
@@ -188,14 +190,14 @@ class DatasetAnalyzer:
 
     def run(self, data_path: str, **kwargs):
         dynamic_agents = convert_dataset(self.dataset_name, data_path, **kwargs)
-        if self.interpolation:
+        if self.interpolation or self.average_window:
             dynamic_agents = TrajectoriesReprocessor.reprocessing(
                 dynamic_agents,
                 max_nans_interpolate=self.interpolation,
                 resampling_rule=None,
-                average_window=None,
+                average_window=self.average_window,
             )
-            LOGGER.debug("Dataset interpolated")
+            LOGGER.debug("Dataset reprocessed")
         metrics = {}
         if self.tracking_duration:
             dataset_tracking_durations = DatasetAnalyzer.get_dataset_tracking_durations(
@@ -219,7 +221,7 @@ class DatasetAnalyzer:
             if self.dataset_name in ["thor", "thor_magni"]:
                 dynamic_agents = TrajectoriesReprocessor.reprocessing(
                     dynamic_agents,
-                    max_nans_interpolate=self.interpolation,
+                    max_nans_interpolate=150,
                     resampling_rule="400ms",
                     average_window="800ms",
                 )

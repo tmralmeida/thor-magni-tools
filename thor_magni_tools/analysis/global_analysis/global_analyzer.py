@@ -20,6 +20,7 @@ class GlobalAnalyzer:
         self,
         dataset_name: str,
         interpolation: Optional[int],
+        average_window: Optional[str],
         tracking_duration: bool,
         perception_noise: bool,
         min_social_distance: bool,
@@ -28,6 +29,7 @@ class GlobalAnalyzer:
     ) -> None:
         self.dataset_name = dataset_name
         self.interpolation = interpolation
+        self.average_window = average_window
         self.tracking_duration = tracking_duration
         self.perception_noise = perception_noise
         self.min_social_distance = min_social_distance
@@ -63,6 +65,7 @@ class GlobalAnalyzer:
                     dataset_analyzer = DatasetAnalyzer(
                         dataset_name=self.dataset_name,
                         interpolation=self.interpolation,
+                        average_window=self.average_window,
                         tracking_duration=self.tracking_duration,
                         perception_noise=self.perception_noise,
                         benchmark_metrics=self.benchmark_metrics,

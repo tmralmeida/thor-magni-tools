@@ -79,7 +79,8 @@ Optional Arguments:
 | Parameter                 | Default       | Description   |	
 | :------------------------ |:-------------:| :-------------|
 | --interpolation 	        |	None          |used to preprocess the dataset. Max frames without tracking |
-| --filtering_markers 	    |	None          |used to filtering THÖR/THÖR-Magni tracks |
+| --average_window 	        |	None          |used to preprocess the dataset. Number of periods to average |
+| --filtering_markers 	    |	None          |filtering markers type used in THÖR/THÖR-Magni tracks |
 
 
 

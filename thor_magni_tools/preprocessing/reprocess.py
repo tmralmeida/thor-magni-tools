@@ -1,6 +1,6 @@
 import os
 import logging
-from typing import Optional
+from typing import Optional, List
 import pandas as pd
 
 from .filtering import Filterer3DOF, Filterer6DOF
@@ -51,6 +51,44 @@ class TrajectoriesReprocessor:
         return input_df
 
     @staticmethod
+    def interpolate(
+        input_df: pd.DataFrame, faulty_columns: List[str], max_nans_interpolate: int
+    ):
+        for col_name in faulty_columns:
+            input_df = TrajectoriesReprocessor.interpolate_with_rule(
+                input_df, col_name, max_nans_interpolate
+            )
+        LOGGER.debug("interpolation applied!")
+        return input_df
+
+    @staticmethod
+    def resample(input_df: pd.DataFrame, faulty_columns: List[str], rule: str):
+        target_agent_resample = input_df.copy()[["frame_id"] + faulty_columns]
+        target_agent_resample.index = pd.TimedeltaIndex(
+            target_agent_resample.index, unit="s"
+        )
+        target_agent_resample = target_agent_resample.resample(rule=rule).first()
+
+        target_agent_resample.index = target_agent_resample.index.total_seconds()
+        LOGGER.debug("resampling applied!")
+        return target_agent_resample
+
+    @staticmethod
+    def move_average_window(
+        input_df: pd.DataFrame, faulty_columns: List[str], window_size: str
+    ):
+        target_agent_smooth = input_df.copy()[["frame_id"] + faulty_columns]
+        target_agent_smooth.index = pd.TimedeltaIndex(
+            target_agent_smooth.index, unit="s"
+        )
+        target_agent_smooth[faulty_columns] = (
+            target_agent_smooth[faulty_columns].rolling(window_size).mean()
+        )
+        target_agent_smooth.index = target_agent_smooth.index.total_seconds()
+        LOGGER.debug("average window applied!")
+        return target_agent_smooth
+
+    @staticmethod
     def reprocessing(
         input_df: pd.DataFrame, max_nans_interpolate: Optional[int], **kwargs
     ) -> pd.DataFrame:
@@ -77,12 +115,6 @@ class TrajectoriesReprocessor:
         for agent_id in agents_in_scenario:
             target_agent = input_df[input_df["ag_id"] == agent_id]
             target_agent_rule_int = target_agent.copy()
-            if max_nans_interpolate:
-                for col_name in faulty_columns:
-                    target_agent_rule_int = TrajectoriesReprocessor.interpolate_with_rule(
-                        target_agent_rule_int, col_name, max_nans_interpolate
-                    )
-                LOGGER.debug("interpolation applied!")
             if data_lbl_col:
                 data_label = target_agent_rule_int["data_label"].iloc[0]
             marker_id = (
@@ -90,29 +122,19 @@ class TrajectoriesReprocessor:
                 if "marker_id" in target_agent_rule_int.columns
                 else None
             )
-            if kwargs["resampling_rule"] or kwargs["average_window"]:
-                target_agent_rule_int = target_agent_rule_int.copy()[
-                    ["frame_id"] + faulty_columns
-                ]
-                target_agent_rule_int.index = pd.TimedeltaIndex(
-                    target_agent_rule_int.index, unit="s"
+            if max_nans_interpolate:
+                target_agent_rule_int = TrajectoriesReprocessor.interpolate(
+                    target_agent_rule_int, faulty_columns, max_nans_interpolate
                 )
             if kwargs["resampling_rule"]:
-                target_agent_rule_int = target_agent_rule_int.resample(
-                    rule=kwargs["resampling_rule"]
-                ).first()
-                LOGGER.debug("resampling applied!")
+                target_agent_rule_int = TrajectoriesReprocessor.resample(
+                    target_agent_rule_int, faulty_columns, kwargs["resampling_rule"]
+                )
             if kwargs["average_window"]:
-                target_agent_rule_int[faulty_columns] = (
-                    target_agent_rule_int[faulty_columns]
-                    .rolling(kwargs["average_window"])
-                    .mean()
+                target_agent_rule_int = TrajectoriesReprocessor.move_average_window(
+                    target_agent_rule_int, faulty_columns, kwargs["average_window"]
                 )
-                LOGGER.debug("average window applied!")
-            if target_agent_rule_int.index.dtype != float:
-                target_agent_rule_int.index = (
-                    target_agent_rule_int.index.total_seconds()
-                )
+            if kwargs["resampling_rule"] or kwargs["average_window"]:
                 target_agent_rule_int["ag_id"] = agent_id
                 if data_lbl_col:
                     target_agent_rule_int["data_label"] = data_label
