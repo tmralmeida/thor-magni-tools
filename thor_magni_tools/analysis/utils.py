@@ -28,8 +28,6 @@ AVAILABLE_SCENARIOS = [
 def log_metrics(logger, metrics):
     for metric_name, metric_value in metrics.items():
         metric_value = np.array(metric_value)
-        if metric_name == "perception_noise":
-            metric_value = np.absolute(metric_value)
         logger.debug(
             "%s: %1.2f+-%1.2f",
             metric_name,
@@ -49,8 +47,6 @@ class ResultSaver:
         self, metric_name: str, metric_values: List[float], results_df: dict
     ) -> None:
         metric_values = np.array(metric_values)
-        if metric_name == "perception_noise":
-            metric_values = np.absolute(metric_values)
         metric_mean, metric_std = metric_values.mean(), metric_values.std()
         results_df[metric_name] = f"{metric_mean:1.2f}+-{metric_std:1.2f}"
         if metric_name == "path_efficiency":

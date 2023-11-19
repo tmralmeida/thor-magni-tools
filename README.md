@@ -29,7 +29,6 @@ conda env create -f ex_environment.yml && conda activate thor-magni-tools
 
 * Trajectories Analysis
   * [x] Tracking duration 
-  * [x] Perception noise 
   * [x] Number of 8 sec tracklets
   * [x] Motion speed
   * [x] Path Efficiency

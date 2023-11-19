@@ -28,7 +28,6 @@ class DatasetAnalyzer:
         interpolation: Optional[int],
         average_window: Optional[str],
         tracking_duration: bool,
-        perception_noise: bool,
         min_social_distance: bool,
         benchmark_metrics: bool,
     ) -> None:
@@ -36,7 +35,6 @@ class DatasetAnalyzer:
         self.interpolation = interpolation
         self.average_window = average_window
         self.tracking_duration = tracking_duration
-        self.perception_noise = perception_noise
         self.benchmark_metrics = benchmark_metrics
         self.min_social_distance = min_social_distance
 
@@ -97,10 +95,7 @@ class DatasetAnalyzer:
         for _, group in groups_of_continuous_tracking:
             if group[tracking_cols].isna().any(axis=0).all():
                 continue
-            if metric_name == "tracking_duration":
-                continous_tracking_metrics.append(group.index[-1] - group.index[0])
-            elif metric_name == "perception_noise":
-                continous_tracking_metrics.extend(group["acceleration"].values[1:].tolist())
+            continous_tracking_metrics.append(group.index[-1] - group.index[0])
         return continous_tracking_metrics
 
     @staticmethod
@@ -140,23 +135,6 @@ class DatasetAnalyzer:
         for tracking_durations in tracking_duration.values():
             overall_tracking_durations.extend(tracking_durations)
         return overall_tracking_durations
-
-    @staticmethod
-    def get_dataset_perception_noise(dynamic_agents: pd.DataFrame):
-        perception_noise = {}
-        for ag_id in dynamic_agents.ag_id.unique():
-            dynamic_object_data = dynamic_agents[dynamic_agents["ag_id"] == ag_id]
-            dynamic_object_data = SpatioTemporalFeatures.get_acceleration(
-                dynamic_object_data
-            )[0]
-            perception_noises = DatasetAnalyzer.get_continuous_tracking_metrics(
-                dynamic_object_data, "perception_noise"
-            )
-            perception_noise[ag_id] = perception_noises
-        overall_perception_noise = []
-        for perception_noises in perception_noise.values():
-            overall_perception_noise.extend(perception_noises)
-        return overall_perception_noise
 
     @staticmethod
     def get_dataset_min_social_distances(dynamic_agents: pd.DataFrame):
@@ -205,12 +183,6 @@ class DatasetAnalyzer:
             )
             metrics.update(tracking_duration=dataset_tracking_durations)
             LOGGER.info("Tracking duration computed")
-        if self.perception_noise:
-            dataset_perception_noise = DatasetAnalyzer.get_dataset_perception_noise(
-                dynamic_agents
-            )
-            metrics.update(perception_noise=dataset_perception_noise)
-            LOGGER.info("Perception noise computed")
         if self.min_social_distance:
             dataset_min_social_distances = (
                 DatasetAnalyzer.get_dataset_min_social_distances(dynamic_agents)

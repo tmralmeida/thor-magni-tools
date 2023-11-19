@@ -1,7 +1,7 @@
-in_path: ../datasets/thor_magni_zenodo/Scenario_1/THOR-Magni_120522_SC1A_R1.csv
-out_path: outputs/
+in_path: ../datasets/thor_magni_zenodo/Scenario_5
+out_path: ../human-trajectory-analysis/data/external/thor_magni/
 preprocessing_type: 3D-best_marker # options: 3D-best_marker/3D-restoration/6D
-max_nans_interpolate: 100 # number of nans to interpolate
+max_nans_interpolate: 150 # number of nans to interpolate * 0.01s => max time to interpolate
 
 options: 
   resampling_rule: 400ms # options: null / ms

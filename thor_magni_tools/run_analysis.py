@@ -74,7 +74,6 @@ if run_batch:
         interpolation=args.interpolation,
         average_window=args.average_window,
         tracking_duration=True,
-        perception_noise=True,
         min_social_distance=True,
         benchmark_metrics=True,
         save_path="outputs/analysis",
@@ -89,7 +88,6 @@ else:
         interpolation=args.interpolation,
         average_window=args.average_window,
         tracking_duration=True,
-        perception_noise=True,
         min_social_distance=True,
         benchmark_metrics=True,
     )
