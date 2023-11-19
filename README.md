@@ -40,6 +40,7 @@ conda env create -f ex_environment.yml && conda activate thor-magni-tools
   * [x] SDD
   * [x] ATC
 
+* [] Rsults Table 
 
 
 ## Running
@@ -80,8 +81,3 @@ Optional Arguments:
 | `--interpolation` 	        |	None          |used to preprocess the dataset. Max frames without tracking |
 | `--average_window` 	        |	None          |used to preprocess the dataset. Number of periods to average |
 | `--filtering_markers` 	    |	None          |filtering markers type used in THÖR/THÖR-Magni tracks |
-
-
-
-
-TODO: Table
