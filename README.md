@@ -71,6 +71,8 @@ If [in_path](https://github.com/tmralmeida/thor-magni-tools/blob/main/thor_magni
 python -m thor_magni_tools.run_analysis --data_path=DATASET_FOLDER OR DATASET FILE --dataset DATASET_NAME 
 ```
 
+Such that `DATASET_NAME` in {"thor_magni", "thor", "eth_ucy", "sdd", "atc"}.
+
 Optional Arguments:
 
 | Parameter                 | Default       | Description   |	
