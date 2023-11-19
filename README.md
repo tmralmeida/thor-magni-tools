@@ -40,7 +40,7 @@ conda env create -f ex_environment.yml && conda activate thor-magni-tools
   * [x] SDD
   * [x] ATC
 
-* [] Rsults Table 
+* [ ] Rsults Table 
 
 
 ## Running
