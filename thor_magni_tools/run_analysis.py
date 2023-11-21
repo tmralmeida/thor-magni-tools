@@ -52,7 +52,7 @@ parser.add_argument(
     type=str,
     required=False,
     choices=["3D-best_marker", "3D-restoration"],
-    default="3D-best_marker",
+    default="3D-restoration",
     help="Filtering markers procedure.",
 )
 
