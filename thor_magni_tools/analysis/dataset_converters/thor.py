@@ -35,9 +35,10 @@ class ThorConverter:
 
     @staticmethod
     def get_dynamic_agents_prefix(scenario_id: str):
-        if scenario_id in ["Scenario_1", "Scenario_3"]:
-            return ("Helmet",)
-        return ("Helmet", "Citi_1")
+        # if scenario_id in ["Scenario_1", "Scenario_3"]:
+        #     return ("Helmet",)
+        # return ("Helmet", "Citi_1")
+        return ("Helmet", )
 
     @staticmethod
     def get_markers_col_names(input_df: pd.DataFrame) -> List[list]:

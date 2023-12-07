@@ -179,7 +179,6 @@ class TrajectoriesReprocessor:
             for col in df.columns
             if (col.startswith(target_agents) and col.endswith(target_columns_suffix))
         ]
-
         target_data = df[["Frame"] + filtered_columns]
         roles = {k: metadata["ROLE"] for k, metadata in traj_metadata.items()}
         if self.pp_type == "6D":

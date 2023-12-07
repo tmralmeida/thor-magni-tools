@@ -8,11 +8,11 @@ from thor_magni_tools.utils.load import (
 class ThorMagniConverter:
     @staticmethod
     def get_dynamic_agents_prefix(scenario_id: str):
-        if scenario_id == "Scenario_1":
-            return ("Helmet",)
-        elif scenario_id in ["Scenario_2", "Scenario_3"]:
-            return ("Helmet", "DARKO_Robot", "LO1")
-        return ("Helmet", "DARKO_Robot")
+        # if scenario_id == "Scenario_1":
+        #     return ("Helmet",)
+        # elif scenario_id in ["Scenario_2", "Scenario_3"]:
+        #     return ("Helmet", "DARKO_Robot", "LO1")
+        return ("Helmet",)  # "DARKO_Robot")
 
     @staticmethod
     def convert(data_path: str, filtering_markers: str):

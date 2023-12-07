@@ -28,13 +28,11 @@ parser.add_argument(
 
 args = parser.parse_args()
 cfg = load_yaml_file(args.cfg_file)
-
 run_batch = True
 if cfg["in_path"].endswith(".csv"):
     run_batch = False
 
 if run_batch:
-
     @ray.remote
     def ray_run_processor(processor):
         return processor.run()
