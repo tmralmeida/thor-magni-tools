@@ -68,12 +68,12 @@ def validate_header_with_dataframe(header_dict: dict, raw_df: pd.DataFrame):
     validated = True
     header_nframes = header_dict["SENSOR_DATA"]["TRAJECTORIES"]["N_FRAMES"]
     df_nframes = raw_df.Frame.iloc[-1]
-    if header_nframes != df_nframes + 1:
+    if header_nframes != df_nframes:
         LOGGER.error(
             "[HEADER/DF MISMATCH] N_FRAMES from header=%d but got %d \
             on the df :(",
             header_nframes,
-            df_nframes + 1,
+            df_nframes,
         )
 
     # Validate n_bodies
