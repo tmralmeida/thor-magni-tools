@@ -54,7 +54,7 @@ python -m thor_magni_tools.run_header_check --dir_path=PATH_TO_SCENARIO_FOLDER -
 ### Preprocessing
 
 
-To preprocess the data with interpolation, first one should set the parameters in the [cfg file](https://github.com/tmralmeida/thor-magni-tools/blob/main/thor_magni_tools/preprocessing/cfg.yaml) and then run:
+To preprocess the data with interpolation (and optional downsampling and moving average filter), first one should set the parameters in the [cfg file](https://github.com/tmralmeida/thor-magni-tools/blob/main/thor_magni_tools/preprocessing/cfg.yaml) and then run:
 
 ```
 python -m thor_magni_tools.run_preprocessing 
