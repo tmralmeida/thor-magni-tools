@@ -43,6 +43,18 @@ conda env create -f ex_environment.yml && conda activate thor-magni-tools
 
 ## Running
 
+### Download the dataset
+
+First, the most important step is to download the dataset from [zenodo](10.5281/zenodo.10407222).
+Run:
+
+```
+curl -O https://zenodo.org/records/10407223/files/THOR_MAGNI.zip\?download\=1 && unzip -r THOR_MAGNI.zip && rm -rf THOR_MAGNI.zip
+```
+
+The CSV files for each Scenario can be found in `THOR_MAGNI\CSVs_Scenarios`.
+
+
 ### CSV headers checker
 
 To check the alignment and consistency of headers in the csv files:
