@@ -54,6 +54,7 @@ class ResultSaver:
 
     def save_scenarios_results(self, scenarios_metrics: dict) -> None:
         results_df = {scenario_id: {} for scenario_id in scenarios_metrics.keys()}
+        dump_json_file(scenarios_metrics, os.path.join(self.save_path, "verbose_results.json"))
         for scenario, scenario_metrics in scenarios_metrics.items():
             for metric_name, metric_values in scenario_metrics.items():
                 self.fill_results(metric_name, metric_values, results_df[scenario])
