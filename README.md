@@ -1,5 +1,5 @@
 # thor-magni-tools
-Preprocessing and filtering tools for THÖR-Magni human motion dataset.
+Preprocessing and filtering tools for [THÖR-MAGNI human motion dataset](http://thor.oru.se/magni.html).
 
 
 # Install
@@ -91,4 +91,4 @@ Optional Arguments:
 | :------------------------ |:-------------:| :-------------|
 | `--interpolation` 	        |	None          |used to preprocess the dataset. Max frames without tracking |
 | `--average_window` 	        |	None          |used to preprocess the dataset. Number of periods to average |
-| `--filtering_markers` 	    |	3D-restoration          |filtering markers type used in THÖR/THÖR-Magni tracks |
+| `--filtering_markers` 	    |	3D-restoration          |filtering markers type used in THÖR/THÖR-MAGNI tracks |
