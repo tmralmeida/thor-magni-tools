@@ -1,45 +1,27 @@
-# thor-magni-tools
-Preprocessing and filtering tools for [THÖR-MAGNI human motion dataset](http://thor.oru.se/magni.html).
+<!--## thor-magni-tools: Tools for Preprocessing and Filtering THÖR-MAGNI Human Motion Dataset-->
+
+<h2 align="center">thor-magni-tools:&thinsp;Tools&thinsp;for&thinsp;Preprocessing&thinsp;and&thinsp;Filtering&thinsp;THÖR&hairsp;&#x0335;&hairsp;MAGNI&thinsp;Human&thinsp;Motion&thinsp;Dataset</h2>
+
+<p align="center">
+  <a href="http://thor.oru.se/magni.html"><strong><code>Project Page</code></strong></a>
+  <a href="https://arxiv.org/abs/2403.09285"><strong><code>Paper</code></strong></a>
+  <a href="https://magni-dash.streamlit.app"><strong><code>Dashboard</code></strong></a>
+  <a href="https://zenodo.org/records/10554472"><strong><code>Dataset</code></strong></a>
+</p>
+
+<div align='center'>
+  <br><img src="doc/MovingPeople.gif" width=70%>
+  <br>THÖR-MAGNI provides human gaze data aligned with 6D motion and human-robot interactions.
+</div>
 
 
-# Install
+## Install
 
 Install [miniconda](http://docs.conda.io/en/latest/miniconda.html). Then, you can install all packages required by running:
 
 ```
 conda env create -f ex_environment.yml && conda activate thor-magni-tools
 ```
-
-
-## Current status
-
-* CSV validation
-  * [x] Header checker
-  * [x] Header/dataframe alignment
-
-* THÖR/THÖR-Magni trackings filtering:
-  * [x] Best marker
-  * [x] Tracking restoring 
-
-
-* Trajectories preprocessing
-  * [x] Interpolation given a max leap
-  * [x] Downsampling given frequency
-  * [x] Smoothing given a moving average window  
-
-* Trajectories Analysis
-  * [x] Tracking duration 
-  * [x] Number of 8 sec tracklets
-  * [x] Motion speed
-  * [x] Path Efficiency
-  * [x] Minimal distance between people
-
-* Dataset Comparison
-  * [x] THÖR
-  * [x] ETH/UCY
-  * [x] SDD
-  * [x] ATC
-
 
 ## Running
 
