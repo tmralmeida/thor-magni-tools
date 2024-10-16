@@ -1,5 +1,6 @@
 from typing import Tuple, Optional
 import pandas as pd
+import numpy as np
 
 
 class Filterer3DOF:
@@ -165,6 +166,20 @@ class Filterer3DOF:
 
 class Filterer6DOF:
     @staticmethod
+    def extract_columns(
+        input_df: pd.DataFrame, agent_id: str, prefix: str, keys: Tuple[str]
+    ) -> dict:
+        """Helper function to extract columns with a given prefix and keys from the dataframe."""
+        return {
+            f"{prefix}_{key}": (
+                input_df[f"{agent_id} {prefix}_{key}"]
+                if f"{agent_id} {prefix}_{key}" in input_df.columns
+                else np.NaN
+            )
+            for key in keys
+        }
+
+    @staticmethod
     def reorganize_df(
         input_df: pd.DataFrame, target_agents: Tuple[str], roles: dict
     ) -> pd.DataFrame:
@@ -185,6 +200,7 @@ class Filterer6DOF:
             reorganized pandas DataFrame
         """
         agents_reorganized = []
+        eyetrackers, axes = ("TB2", "TB3", "PPL"), ("X", "Y", "Z")
         for agent_id in target_agents:
             df_dict = {
                 "frame_id": input_df.Frame,
@@ -195,6 +211,24 @@ class Filterer6DOF:
                 "data_label": roles[agent_id],
             }
             df_dict.update({f"rot_{i}": input_df[f"{agent_id} R{i}"] for i in range(9)})
+            for et in eyetrackers:
+                df_dict.update(
+                    Filterer6DOF.extract_columns(
+                        input_df, agent_id, f"{et}_G2D", axes[:2]
+                    )
+                )
+                movement_key = f"{agent_id} {et}_Movement"
+                df_dict[f"{et}_movement"] = (
+                    input_df[movement_key]
+                    if movement_key in input_df.columns
+                    else np.NaN
+                )
+                if et != "PPL":
+                    df_dict.update(
+                        Filterer6DOF.extract_columns(
+                            input_df, agent_id, f"{et}_G3D", axes
+                        )
+                    )
             out_df = pd.DataFrame(df_dict)
             agents_reorganized.append(out_df)
         out_df = pd.concat(agents_reorganized, axis=0)
