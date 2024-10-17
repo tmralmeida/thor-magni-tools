@@ -44,7 +44,7 @@ class DatasetAnalyzer:
 
     @staticmethod
     def get_groups_continuous_tracking(dynamic_agent_data: pd.DataFrame):
-        mask = dynamic_agent_data[["x", "y", "x"]].isna().any(axis=1)
+        mask = dynamic_agent_data[["x", "y", "z"]].isna().any(axis=1)
         groups = (mask != mask.shift()).cumsum()
         groups_of_continuous_tracking = dynamic_agent_data.groupby(groups)
         return groups_of_continuous_tracking
