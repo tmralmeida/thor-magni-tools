@@ -161,9 +161,9 @@ class TrajectoriesReprocessor:
             axes = ("X", "Y", "Z")
             for et in eytrackers:
                 columns_suff += tuple(f"{et}_G2D_{axis}" for axis in axes[:2])
-                columns_suff += tuple([f"{et}_Movement"])
                 if et != "PPL":
                     columns_suff += tuple(f"{et}_G3D_{axis}" for axis in axes)
+                    columns_suff += tuple([f"{et}_Movement"])
         return dict(
             target_agents=target_agents,
             target_columns_suffix=columns_suff,

@@ -217,13 +217,13 @@ class Filterer6DOF:
                         input_df, agent_id, f"{et}_G2D", axes[:2]
                     )
                 )
-                movement_key = f"{agent_id} {et}_Movement"
-                df_dict[f"{et}_movement"] = (
-                    input_df[movement_key]
-                    if movement_key in input_df.columns
-                    else np.NaN
-                )
                 if et != "PPL":
+                    movement_key = f"{agent_id} {et}_Movement"
+                    df_dict[f"{et}_movement"] = (
+                        input_df[movement_key]
+                        if movement_key in input_df.columns
+                        else np.NaN
+                    )
                     df_dict.update(
                         Filterer6DOF.extract_columns(
                             input_df, agent_id, f"{et}_G3D", axes
