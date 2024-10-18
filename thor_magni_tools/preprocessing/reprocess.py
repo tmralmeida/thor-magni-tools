@@ -156,11 +156,12 @@ class TrajectoriesReprocessor:
         if self.pp_type == "6D":
             columns_axis = tuple(f"Centroid_{axis}" for axis in columns_suff)
             columns_rot = tuple(f"R{rot}" for rot in range(9))
-            eytrackers = "TB2", "TB3", "PPL"
+            eytrackers = ("TB2", "TB3", "PPL")
             columns_suff = columns_axis + columns_rot
             axes = ("X", "Y", "Z")
             for et in eytrackers:
                 columns_suff += tuple(f"{et}_G2D_{axis}" for axis in axes[:2])
+                columns_suff += tuple(f"{et}_SceneFNr")
                 if et != "PPL":
                     columns_suff += tuple(f"{et}_G3D_{axis}" for axis in axes)
                     columns_suff += tuple([f"{et}_Movement"])

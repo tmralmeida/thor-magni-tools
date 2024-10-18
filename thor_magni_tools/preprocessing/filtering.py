@@ -212,10 +212,14 @@ class Filterer6DOF:
             }
             df_dict.update({f"rot_{i}": input_df[f"{agent_id} R{i}"] for i in range(9)})
             for et in eyetrackers:
+                scene_key = f"{agent_id} {et}_SceneFNr"
                 df_dict.update(
                     Filterer6DOF.extract_columns(
                         input_df, agent_id, f"{et}_G2D", axes[:2]
                     )
+                )
+                df_dict[f"{et}_scene_id"] = (
+                    input_df[scene_key] if scene_key in input_df.columns else np.NaN
                 )
                 if et != "PPL":
                     movement_key = f"{agent_id} {et}_Movement"
