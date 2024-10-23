@@ -83,7 +83,7 @@ Optional Arguments:
 **Attention:** 
 
 * This is only available for the latest [Zenodo version](https://zenodo.org/records/13865754).
-* If you have the `thor-magni-tools` conda environment alread installed run:
+* If you already have the `thor-magni-tools' conda environment installed, run:
 
 ```
 conda activate thor-magni-tools && pip install opencv-python
