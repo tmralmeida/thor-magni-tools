@@ -80,6 +80,8 @@ Optional Arguments:
 
 ![Synchronization visualization](doc/thor_magni_gazes.png)
 
+**Attention:** This is only available for the latest [Zenodo version](https://zenodo.org/records/13865754).
+
 ```
 python -m thor_magni_tools.thor_magni_gazes.visualize --raw_file PATH_TO_CSV_RAW_FILE --max_nans_interpolate NUMBER_OF_MAX_QTM_FRAMES_TO_INTERPOLATE --visualization_step NUMBER_OF_FRAMES_LEAP_VISUALIZATION
 ```
