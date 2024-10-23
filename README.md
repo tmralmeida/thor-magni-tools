@@ -80,7 +80,16 @@ Optional Arguments:
 
 ![Synchronization visualization](doc/thor_magni_gazes.png)
 
-**Attention:** This is only available for the latest [Zenodo version](https://zenodo.org/records/13865754).
+**Attention:** 
+
+* This is only available for the latest [Zenodo version](https://zenodo.org/records/13865754).
+* If you have the `thor-magni-tools` conda environment alread installed run:
+
+```
+conda activate thor-magni-tools && pip install opencv-python
+```
+
+To run the latest visualization tool, which allows you to view frame-by-frame the participant(s) wearing eye-tracking glasses, including their 6D head pose and 3D gaze (top), along with the corresponding 2D gaze (bottom), use the following command:
 
 ```
 python -m thor_magni_tools.thor_magni_gazes.visualize --raw_file PATH_TO_CSV_RAW_FILE --max_nans_interpolate NUMBER_OF_MAX_QTM_FRAMES_TO_INTERPOLATE --visualization_step NUMBER_OF_FRAMES_LEAP_VISUALIZATION
