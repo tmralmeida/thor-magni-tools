@@ -220,6 +220,8 @@ class TrajectoriesReprocessor:
         LOGGER.debug(
             "After running the preprocessing # NaNs: %s", postprocessed_nans_counter
         )
-        create_dir(os.path.join(self.out_dir, scenario_id))
-        pp_df.to_csv(os.path.join(self.out_dir, scenario_id, file_name))
         LOGGER.info("%s preprocessed!", file_name)
+        if self.out_dir:
+            create_dir(os.path.join(self.out_dir, scenario_id))
+            pp_df.to_csv(os.path.join(self.out_dir, scenario_id, file_name))
+        return pp_df

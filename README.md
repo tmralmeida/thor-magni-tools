@@ -74,3 +74,20 @@ Optional Arguments:
 | `--interpolation` 	        |	None          |used to preprocess the dataset. Max frames without tracking |
 | `--average_window` 	        |	None          |used to preprocess the dataset. Number of periods to average |
 | `--filtering_markers` 	    |	3D-restoration          |filtering markers type used in THÖR/THÖR-MAGNI tracks |
+
+
+### :rocket: [New Feature 23/10/2024] Visualization of synchronized gazes and trajectory data
+
+![Synchronization visualization](doc/thor_magni_gazes.png)
+
+```
+python -m thor_magni_tools.thor_magni_gazes.visualize --raw_file PATH_TO_CSV_RAW_FILE --max_nans_interpolate NUMBER_OF_MAX_QTM_FRAMES_TO_INTERPOLATE --visualization_step NUMBER_OF_FRAMES_LEAP_VISUALIZATION
+```
+
+Optional Arguments:
+
+| Parameter                 | Default       | Description   |	
+| :------------------------ |:-------------:| :-------------|
+| `--max_nans_interpolate` 	        |	100          |max QTM (trajectory) frames to interpolate |
+| `--visualization_step` 	    |	10          | visualization frames leap |
+
