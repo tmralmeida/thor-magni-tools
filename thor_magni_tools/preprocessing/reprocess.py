@@ -110,13 +110,13 @@ class TrajectoriesReprocessor:
             input_df.columns.str.startswith(("x", "y", "z", "rot"))
         ].tolist()
         agents_in_scenario = input_df["ag_id"].unique()
-        data_lbl_col = True if "data_label" in input_df.columns else False
+        data_lbl_col = True if "agent_type" in input_df.columns else False
         agents_preprocessed = []
         for agent_id in agents_in_scenario:
             target_agent = input_df[input_df["ag_id"] == agent_id]
             target_agent_rule_int = target_agent.copy()
             if data_lbl_col:
-                data_label = target_agent_rule_int["data_label"].iloc[0]
+                agent_type = target_agent_rule_int["agent_type"].iloc[0]
             marker_id = (
                 target_agent_rule_int["marker_id"].iloc[0]
                 if "marker_id" in target_agent_rule_int.columns
@@ -137,7 +137,7 @@ class TrajectoriesReprocessor:
             if kwargs["resampling_rule"] or kwargs["average_window"]:
                 target_agent_rule_int["ag_id"] = agent_id
                 if data_lbl_col:
-                    target_agent_rule_int["data_label"] = data_label
+                    target_agent_rule_int["agent_type"] = agent_type
                 if marker_id:
                     target_agent_rule_int["marker_id"] = marker_id
 

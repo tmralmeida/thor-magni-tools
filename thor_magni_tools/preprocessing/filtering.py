@@ -34,7 +34,7 @@ class Filterer3DOF:
     ) -> pd.DataFrame:
         """Reorganize DataFrame structure
         Output:
-            |Time|frame_id|ag_id|x|y|z|data_label|marker_id
+            |Time|frame_id|ag_id|x|y|z|agent_type|marker_id
         Parameters
         ----------
         input_df
@@ -58,7 +58,7 @@ class Filterer3DOF:
                     "x": input_df[f"{ag_id} - {best_marker_id} X"],
                     "y": input_df[f"{ag_id} - {best_marker_id} Y"],
                     "z": input_df[f"{ag_id} - {best_marker_id} Z"],
-                    "data_label": role,
+                    "agent_type": role,
                     "best_marker_id": best_marker_id,
                 }
             )
@@ -70,7 +70,7 @@ class Filterer3DOF:
                     "x": input_df[f"{ag_id} X"],
                     "y": input_df[f"{ag_id} Y"],
                     "z": input_df[f"{ag_id} Z"],
-                    "data_label": role,
+                    "agent_type": role,
                 }
             )
         return out_df
@@ -79,7 +79,7 @@ class Filterer3DOF:
     def filter_best_markers(input_df: pd.DataFrame, roles: dict) -> pd.DataFrame:
         """Filtering 3D trajectories based on the best marker.
         Output:
-        |Time|frame_id|ag_id|x|y|z|data_label|marker_id
+        |Time|frame_id|ag_id|x|y|z|agent_type|marker_id
 
         marker_id column -> best marker based on the argmin(NaNs)
 
@@ -117,7 +117,7 @@ class Filterer3DOF:
     def restore_markers(input_df: pd.DataFrame, roles: dict) -> pd.DataFrame:
         """Restore markers based on the average tracked location
         Output:
-        |Time|frame_id|ag_id|x|y|z|data_label|marker_id
+        |Time|frame_id|ag_id|x|y|z|agent_type|marker_id
 
         marker_id column -> best marker based on the argmin(NaNs)
 
@@ -184,7 +184,7 @@ class Filterer6DOF:
         input_df: pd.DataFrame, target_agents: Tuple[str], roles: dict
     ) -> pd.DataFrame:
         """Output:
-            |Time|frame_id|ag_id|x|y|z|data_label|marker_id
+            |Time|frame_id|ag_id|x|y|z|agent_type|marker_id
 
         Parameters
         ----------
@@ -208,7 +208,7 @@ class Filterer6DOF:
                 "x_centroid": input_df[f"{agent_id} Centroid_X"],
                 "y_centroid": input_df[f"{agent_id} Centroid_Y"],
                 "z_centroid": input_df[f"{agent_id} Centroid_Z"],
-                "data_label": roles[agent_id],
+                "agent_type": roles[agent_id],
             }
             df_dict.update({f"rot_{i}": input_df[f"{agent_id} R{i}"] for i in range(9)})
             for et in eyetrackers:

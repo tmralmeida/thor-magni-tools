@@ -10,7 +10,7 @@ SDD_cols = [
     "lost",
     "occluded",
     "generated",
-    "data_label",
+    "agent_type",
 ]
 STEP = 1
 

@@ -37,7 +37,7 @@ class Loader:
     @staticmethod
     def filter_tobii_data(eyt_helmets_df: pd.DataFrame) -> pd.DataFrame:
         agents_group = eyt_helmets_df.groupby("ag_id")
-        initial_col_names = ("frame_id", "ag_id", "data_label", "x", "y", "z", "rot")
+        initial_col_names = ("frame_id", "ag_id", "agent_type", "x", "y", "z", "rot")
         target_dfs = []
         for _, group in agents_group:
             if group["TB2_G2D_X"].isna().sum() != len(group):
@@ -184,7 +184,7 @@ def visualize_trajectories(
 
             ax.text(
                 *head_pos,
-                f"{row['data_label']}\n{row['eyt_device']}\n{row['eyt_movement']}",
+                f"{row['agent_type']}\n{row['eyt_device']}\n{row['eyt_movement']}",
                 color=color,
                 fontsize=10,
             )
