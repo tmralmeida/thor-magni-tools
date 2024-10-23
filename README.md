@@ -56,7 +56,7 @@ python -m thor_magni_tools.run_preprocessing
 
 If [in_path](https://github.com/tmralmeida/thor-magni-tools/blob/main/thor_magni_tools/preprocessing/cfg.yaml#L1) is a folder, it will preprocess the files in the folder in parallel. 
 After finishing, the files will be stored in the [pre-specified output path](https://github.com/tmralmeida/thor-magni-tools/blob/main/thor_magni_tools/preprocessing/cfg.yaml#L2) with the 
-format | time | frame_id | x | y | z | ag_id | data_label, where `ag_id` is the helmet number and `data_label` is the role of the participant.
+format | time | frame_id | x | y | z | ag_id | agent_type, where `ag_id` is the helmet number and `agent_type` is the role of the participant.
 
 
 ### Analysis
