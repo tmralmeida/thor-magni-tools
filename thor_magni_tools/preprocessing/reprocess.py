@@ -217,6 +217,7 @@ class TrajectoriesReprocessor:
             body_name: pp_df[pp_df["ag_id"] == body_name][col_nans].isna().sum()
             for body_name in target_agents
         }
+        pp_df["frame_id"] = pp_df["frame_id"].astype("int")
         LOGGER.debug(
             "After running the preprocessing # NaNs: %s", postprocessed_nans_counter
         )
