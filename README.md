@@ -76,7 +76,7 @@ Optional Arguments:
 | `--filtering_markers` 	    |	3D-restoration          |filtering markers type used in THÖR/THÖR-MAGNI tracks |
 
 
-### :rocket: [New Feature 23/10/2024] Visualization of synchronized gazes and trajectory data
+### Visualization of synchronized gazes and trajectory data
 
 ![Synchronization visualization](doc/thor_magni_gazes.png)
 
@@ -102,3 +102,20 @@ Optional Arguments:
 | `--max_nans_interpolate` 	        |	100          |max QTM (trajectory) frames to interpolate |
 | `--visualization_step` 	    |	10          | visualization frames leap |
 
+### :rocket: [New Feature 04/12/2024] Merging micro-actions with trajectory data
+
+
+We present THÖR-MAGNI Act, an extension of the original THÖR-MAGNI dataset containing 8.3 hours of manually labeled participant actions derived from egocentric videos recorded with eye-tracking glasses.
+
+We demonstrate the utility of THÖR-MAGNI Act for two tasks: action-conditioned trajectory prediction and joint action and trajectory prediction and joint action and trajectory prediction in this [paper](TODO) and [repo](TODO).
+
+
+Run data merging:
+
+```
+python -m thor_magni_tools.run_actions_merging --actions_path PATH_TO_ACTIONS_FILE_MERGER --files_dir PATH_TO_TRAJECTORIES_DIR --out_path PATH_TO_OUTPUT_FILES
+```
+
+* ACTIONS_FILE_MERGER: [QTM_frames_activities.csv](TODO)
+* PATH_TO_TRAJECTORIES_DIR: for instance, `outputs/data/thor_magni/Scenario_3/` storing the csv files from the preprocessing step.
+* 
