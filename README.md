@@ -117,5 +117,4 @@ python -m thor_magni_tools.run_actions_merging --actions_path PATH_TO_ACTIONS_FI
 ```
 
 * ACTIONS_FILE_MERGER: [QTM_frames_activities.csv](TODO)
-* PATH_TO_TRAJECTORIES_DIR: for instance, `outputs/data/thor_magni/Scenario_3/` storing the csv files from the preprocessing step.
-* 
+* PATH_TO_TRAJECTORIES_DIR: for instance, `outputs/data/thor_magni/Scenario_3/` storing the csv files from the preprocessing step
