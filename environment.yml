@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - pip=22.3.1=pyhd8ed1ab_0
-  - python=3.10.8=h4a9ceb5_0_cpython
+  - python=3.10.8=hf452327_0_cpython
   - pip:
     - altair==4.2.0
     - numpy==1.24.1
