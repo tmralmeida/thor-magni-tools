@@ -27,7 +27,7 @@ conda env create -f environment.yml && conda activate thor-magni-tools
 
 ### Download the dataset
 
-First, the most important step is to download the dataset from [zenodo](10.5281/zenodo.13865754).
+First, the most important step is to download the dataset from [zenodo](https://zenodo.org/records/13865754).
 Run:
 
 ```
