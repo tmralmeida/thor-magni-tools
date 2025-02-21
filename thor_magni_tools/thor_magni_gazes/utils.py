@@ -7,7 +7,9 @@ import numpy as np
 import cv2
 
 
-def extract_target_columns(input_df: pd.DataFrame, target_cols_init=Tuple[str]) -> pd.DataFrame:
+def extract_target_columns(
+    input_df: pd.DataFrame, target_cols_init=Tuple[str]
+) -> pd.DataFrame:
     target_cols = input_df.columns[input_df.columns.str.startswith(target_cols_init)]
     input_df = input_df[target_cols].dropna(subset=target_cols, how="any")
     return input_df
@@ -70,7 +72,10 @@ class Loader:
 
 
 def visualize_trajectories(
-    df: pd.DataFrame, goal_points: np.array, video_paths: Tuple[str, str], step: int = 50
+    df: pd.DataFrame,
+    goal_points: np.array,
+    video_paths: Tuple[str, str],
+    step: int = 50,
 ):
     """
     Visualizes the rolling 3D trajectories with gaze vectors for all agents at each time step,
@@ -85,11 +90,22 @@ def visualize_trajectories(
 
     caps_obj, imgs_obj, axs_obj = {}, {}, {}
     for i, tobii_device in enumerate(tobii_devices):
-        tb_ag = df[df["eyt_device"] == tobii_device]["ag_id"].iloc[0].replace("Helmet_", "H")
-        tb_video_file_name = (
-            tobii_device.replace("TB", "Tobii") + "_" + video_paths[1] + "_" + tb_ag + ".mp4"
+        tb_ag = (
+            df[df["eyt_device"] == tobii_device]["ag_id"]
+            .iloc[0]
+            .replace("Helmet_", "H")
         )
-        caps_obj[tobii_device] = cv2.VideoCapture(os.path.join(video_paths[0], tb_video_file_name))
+        tb_video_file_name = (
+            tobii_device.replace("TB", "Tobii")
+            + "_"
+            + video_paths[1]
+            + "_"
+            + tb_ag
+            + ".mp4"
+        )
+        caps_obj[tobii_device] = cv2.VideoCapture(
+            os.path.join(video_paths[0], tb_video_file_name)
+        )
         axs_obj[tobii_device] = fig.add_subplot(int(f"22{i + 3}"))
         axs_obj[tobii_device].axis("off")
 
@@ -124,21 +140,26 @@ def visualize_trajectories(
             rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             rgb_frame = cv2.circle(
                 rgb_frame,
-                (int(et_frame["x_eyt_G2D"].values[0]), int(et_frame["y_eyt_G2D"].values[0])),
+                (
+                    int(et_frame["x_eyt_G2D"].values[0]),
+                    int(et_frame["y_eyt_G2D"].values[0]),
+                ),
                 radius=20,
                 color=(255, 0, 0),
                 thickness=-1,
             )
             imgs_obj[tobii_device].set_data(rgb_frame)
-            axs_obj[tobii_device].set_title(f"{tobii_device}-{et_frame_idx}", fontsize=30)
+            axs_obj[tobii_device].set_title(
+                f"{tobii_device}-{et_frame_idx}", fontsize=30
+            )
 
         """Plots a single frame for the current time step with all agents."""
         ax.cla()
 
         ax.text(
-            df["x_centroid"].min() - 500,
-            df["y_centroid"].min() - 500,
-            df["z_centroid"].max(),
+            df["x"].min() - 500,
+            df["y"].min() - 500,
+            df["z"].max(),
             f"Time: {time_step}",
             color="black",
             fontsize=20,
@@ -162,8 +183,10 @@ def visualize_trajectories(
                 continue  # Skip if no data for the agent in this timestep
 
             row = agent_df.iloc[0]
-            head_pos = np.array([row["x_centroid"], row["y_centroid"], row["z_centroid"]])
-            gaze_vector = np.array([row["x_eyt_G3D"], row["y_eyt_G3D"], row["z_eyt_G3D"]])
+            head_pos = np.array([row["x"], row["y"], row["z"]])
+            gaze_vector = np.array(
+                [row["x_eyt_G3D"], row["y_eyt_G3D"], row["z_eyt_G3D"]]
+            )
             rotations = row[[f"rot_{i}" for i in range(9)]].values
             rotations_reshaped = rotations.reshape(3, 3).T
             x_rep = np.array([[10**3, 0, 0]])

@@ -205,9 +205,9 @@ class Filterer6DOF:
             df_dict = {
                 "frame_id": input_df.Frame,
                 "ag_id": agent_id,
-                "x_centroid": input_df[f"{agent_id} Centroid_X"],
-                "y_centroid": input_df[f"{agent_id} Centroid_Y"],
-                "z_centroid": input_df[f"{agent_id} Centroid_Z"],
+                "x": input_df[f"{agent_id} Centroid_X"],
+                "y": input_df[f"{agent_id} Centroid_Y"],
+                "z": input_df[f"{agent_id} Centroid_Z"],
                 "agent_type": roles[agent_id],
             }
             df_dict.update({f"rot_{i}": input_df[f"{agent_id} R{i}"] for i in range(9)})
