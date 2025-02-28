@@ -1,6 +1,7 @@
 from typing import Tuple, Optional
 import pandas as pd
 import numpy as np
+from scipy.spatial.transform import Rotation
 
 
 class Filterer3DOF:
@@ -166,6 +167,23 @@ class Filterer3DOF:
 
 class Filterer6DOF:
     @staticmethod
+    def rotation_matrix_to_euler(row):
+        rot_matrix = np.array(
+            [
+                [row["rot_0"], row["rot_3"], row["rot_6"]],
+                [row["rot_1"], row["rot_4"], row["rot_7"]],
+                [row["rot_2"], row["rot_5"], row["rot_8"]],
+            ]
+        )
+        if np.all(np.isnan(rot_matrix)):
+            euler_angles = np.array([np.NaN, np.NaN, np.NaN])
+        else:
+            euler_angles = Rotation.from_matrix(rot_matrix).as_euler(
+                "zyx", degrees=True
+            )
+        return pd.Series(euler_angles, index=["rot_yaw", "rot_pitch", "rot_roll"])
+
+    @staticmethod
     def extract_columns(
         input_df: pd.DataFrame, agent_id: str, prefix: str, keys: Tuple[str]
     ) -> dict:
@@ -234,6 +252,10 @@ class Filterer6DOF:
                         )
                     )
             out_df = pd.DataFrame(df_dict)
+            out_df[["rot_yaw", "rot_pitch", "rot_roll"]] = out_df.apply(
+                Filterer6DOF.rotation_matrix_to_euler, axis=1
+            )
+            out_df = out_df.drop(columns=[f"rot_{i}" for i in range(9)])
             agents_reorganized.append(out_df)
         out_df = pd.concat(agents_reorganized, axis=0)
         out_df = out_df.sort_index()
