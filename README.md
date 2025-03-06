@@ -107,7 +107,7 @@ Optional Arguments:
 
 We present THÖR-MAGNI Act, an extension of the original THÖR-MAGNI dataset containing 8.3 hours of manually labeled participant actions derived from egocentric videos recorded with eye-tracking glasses.
 
-We demonstrate the utility of THÖR-MAGNI Act for two tasks: action-conditioned trajectory prediction and joint action and trajectory prediction and joint action and trajectory prediction in this [paper](TODO) and [repo](TODO).
+We demonstrate the utility of THÖR-MAGNI Act for two tasks: action-conditioned trajectory prediction and joint action and trajectory prediction and joint action and trajectory prediction in this [paper](https://arxiv.org/abs/2412.13729) and [repo](https://github.com/tmralmeida/thor-magni-actions).
 
 
 Run data merging:
@@ -116,7 +116,7 @@ Run data merging:
 python -m thor_magni_tools.run_actions_merging --actions_path PATH_TO_ACTIONS_FILE_MERGER --files_dir PATH_TO_TRAJECTORIES_DIR --out_path PATH_TO_OUTPUT_FILES
 ```
 
-* ACTIONS_FILE_MERGER: [QTM_frames_activities.csv](TODO)
+* ACTIONS_FILE_MERGER: [QTM_frames_activities.csv](https://github.com/tmralmeida/thor-magni-actions/blob/main/data/processed/thor_magni/QTM_frames_actions.zip)
 * PATH_TO_TRAJECTORIES_DIR: for instance, `outputs/data/thor_magni/Scenario_3/` storing the csv files from the preprocessing step
 
 
@@ -137,9 +137,6 @@ doi = {10.1177/02783649241274794},
 URL = {https://doi.org/10.1177/02783649241274794},
 eprint = {https://doi.org/10.1177/02783649241274794}
 }
-
-
-
 ```
 
 # Contact
