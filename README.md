@@ -118,3 +118,35 @@ python -m thor_magni_tools.run_actions_merging --actions_path PATH_TO_ACTIONS_FI
 
 * ACTIONS_FILE_MERGER: [QTM_frames_activities.csv](TODO)
 * PATH_TO_TRAJECTORIES_DIR: for instance, `outputs/data/thor_magni/Scenario_3/` storing the csv files from the preprocessing step
+
+
+# Reference
+
+Further details on the motivation and implementation of the THÖR-MAGNI dataset can be found in [the following paper](https://journals.sagepub.com/doi/full/10.1177/02783649241274794):
+
+```
+@article{doi:10.1177/02783649241274794,
+author = {Tim Schreiter and Tiago Rodrigues de Almeida and Yufei Zhu and Eduardo Gutierrez Maestro and Lucas Morillo-Mendez and Andrey Rudenko and Luigi Palmieri and Tomasz P Kucner and Martin Magnusson and Achim J Lilienthal},
+title ={THÖR-MAGNI: A large-scale indoor motion capture recording of human movement and robot interaction},
+journal = {The International Journal of Robotics Research},
+volume = {0},
+number = {0},
+pages = {02783649241274794},
+year = {0},
+doi = {10.1177/02783649241274794},
+URL = { 
+    
+        https://doi.org/10.1177/02783649241274794
+},
+eprint = { 
+    
+        https://doi.org/10.1177/02783649241274794
+}}
+
+
+
+```
+
+# Contact
+
+The ``thor-magni-tools`` package has been developed by Tiago Rodrigues de Almeida [tiago.almeida@oru.se](tiago.almeida@oru.se).
